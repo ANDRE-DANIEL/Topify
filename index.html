@@ -121,7 +121,9 @@
                             <div class="quiz-icon">💻</div>
                             <div class="quiz-info">
                                 <h3>BASIC PROGRAMMING</h3>
-                                <button class="btn btn-quiz" data-quiz="BASIC PROGRAMMING">Start Quiz</button>
+                                <button class="btn btn-quiz" data-quiz="BASIC PROGRAMMING" onclick="window.location.href='quiz.html'">
+                                    Start Quiz
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -131,7 +133,9 @@
                             <div class="quiz-icon">🌐</div>
                             <div class="quiz-info">
                                 <h3>NETWORKING</h3>
-                                <button class="btn btn-quiz" data-quiz="NETWORKING">Start Quiz</button>
+                                <button class="btn btn-quiz" onclick="window.location.href='quiz.html?id=networking'">
+                                    Start Quiz
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -140,8 +144,10 @@
                         <div class="quiz-content">
                             <div class="quiz-icon">🎨</div>
                             <div class="quiz-info">
-                                <h3>UI AND UX CONCEPTS</h3>
-                                <button class="btn btn-quiz" data-quiz="UI AND UX CONCEPTS">Start Quiz</button>
+                                <h3>UI/UX DESIGN</h3>
+                                <button class="btn btn-quiz" onclick="window.location.href='quiz.html?id=ui-ux'">
+                                    Start Quiz
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -280,7 +286,7 @@
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </button>
-                            <button class="btn btn-primary btn-sm">
+                            <button class="btn btn-primary btn-sm" onclick="window.location.href='quiz.html?id=basic-programming'">
                                 <i class="fas fa-play"></i>
                                 Start
                             </button>
@@ -302,10 +308,11 @@
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </button>
-                            <button class="btn btn-primary btn-sm">
+                            <button class="btn btn-primary btn-sm" onclick="window.location.href='quiz.html?id=networking'">
                                 <i class="fas fa-play"></i>
                                 Start
                             </button>
+
                         </div>
                     </div>
 
@@ -324,10 +331,11 @@
                                 <i class="fas fa-edit"></i>
                                 Edit
                             </button>
-                            <button class="btn btn-primary btn-sm">
+                            <button class="btn btn-primary btn-sm" onclick="window.location.href='quiz.html?id=ui-ux'">
                                 <i class="fas fa-play"></i>
                                 Start
                             </button>
+
                         </div>
                     </div>
 
@@ -460,5 +468,6 @@
     </div>
 
     <script src="script.js"></script>
+    <script src="quiz.js"></script>
 </body>
 </html>

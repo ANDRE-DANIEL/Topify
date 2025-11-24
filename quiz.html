@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Master - Take Quiz</title>
+    <meta name="description" content="Test your knowledge with interactive quizzes">
+    <link rel="stylesheet" href="quiz.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide-static/0.16.29/font/lucide.min.css">
+</head>
+<body>
+    <!-- Quiz Taking View -->
+    <div id="quiz-container" class="quiz-container">
+        <div class="quiz-header">
+            <button id="back-btn" class="back-btn">
+                <i data-lucide="arrow-left"></i>
+                Back to Home
+            </button>
+            <div class="timer" id="timer">
+                <i data-lucide="clock"></i>
+                <span id="time-display">00:00</span>
+            </div>
+        </div>
+
+        <div class="quiz-content">
+            <div class="progress-section">
+                <div class="progress-header">
+                    <span id="progress-text">Question 1 of 5</span>
+                    <span id="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+            </div>
+
+            <div id="quiz-card" class="quiz-card">
+                <div class="quiz-title-section">
+                    <div id="quiz-icon" class="quiz-icon">💻</div>
+                    <h1 id="quiz-title" class="quiz-title">Basic Programming Concepts</h1>
+                </div>
+
+                <div class="question-section">
+                    <h2 id="question-text" class="question-text"></h2>
+                    <div id="options-container" class="options-container"></div>
+                </div>
+
+                <div class="navigation-buttons">
+                    <button id="prev-btn" class="btn btn-outline" disabled>
+                        <i data-lucide="chevron-left"></i>
+                        Previous
+                    </button>
+                    <button id="next-btn" class="btn btn-primary">
+                        Next
+                        <i data-lucide="chevron-right"></i>
+                    </button>
+                    <button id="submit-btn" class="btn btn-success" style="display: none;">
+                        Submit Quiz
+                        <i data-lucide="check"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- Results View -->
+    <div id="results-container" class="results-container" style="display: none;">
+        <div class="results-content">
+            <div class="results-header">
+                <div class="results-icon">🎉</div>
+                <h1>Quiz Complete!</h1>
+                <p class="results-subtitle">Here's how you did</p>
+            </div>
+
+            <div class="results-stats">
+                <div class="result-stat">
+                    <div class="stat-icon stat-icon-primary">
+                        <i data-lucide="trophy"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Your Score</div>
+                        <div id="score-display" class="stat-value">0/5</div>
+                    </div>
+                </div>
+
+                <div class="result-stat">
+                    <div class="stat-icon stat-icon-success">
+                        <i data-lucide="check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Correct Answers</div>
+                        <div id="correct-display" class="stat-value">0</div>
+                    </div>
+                </div>
+
+                <div class="result-stat">
+                    <div class="stat-icon stat-icon-accent">
+                        <i data-lucide="clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <div class="stat-label">Time Taken</div>
+                        <div id="time-taken-display" class="stat-value">00:00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="results-actions">
+                <button id="home-btn" class="btn btn-outline">
+                    <i data-lucide="home"></i>
+                    Back to Home
+                </button>
+                <button id="retake-btn" class="btn btn-primary">
+                    <i data-lucide="rotate-ccw"></i>
+                    Retake Quiz
+                </button>
+            </div>
+
+            <!-- Review Answers Section -->
+            <div class="review-section">
+                <h2 class="review-title">Review Your Answers</h2>
+                <div id="review-container" class="review-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="quiz.js"></script>
+</body>
+</html>
