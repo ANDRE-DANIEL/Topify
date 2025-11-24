@@ -45,213 +45,419 @@
     <!-- Main Content -->
     <main class="main-content">
         <div class="container">
-            <!-- Header -->
-            <div class="header">
-                <div class="search-container">
-                    <i class="fas fa-search search-icon"></i>
-                    <input type="text" class="search-input" placeholder="Search">
-                </div>
-                
-                <div class="header-actions">
-                    <button class="btn btn-outline btn-sm">
-                        <i class="fas fa-edit"></i>
-                        Edit
-                    </button>
-                    <button class="btn btn-outline btn-sm" id="share-btn">
-                        <i class="fas fa-share-alt"></i>
-                        Share
-                    </button>
-                    <button class="btn btn-primary btn-sm">
-                        Preview
-                    </button>
-                </div>
-            </div>
-
-            <h2 class="page-title">Class Progress</h2>
-
-            <!-- Stats Grid -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <p class="stat-title">Total Completions</p>
-                        <p class="stat-value">28</p>
+            <!-- Dashboard View -->
+            <div id="dashboard-view" class="page-view active">
+                <!-- Header -->
+                <div class="header">
+                    <div class="search-container">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" class="search-input" placeholder="Search">
                     </div>
-                    <div class="stat-icon stat-icon-purple">
-                        <i class="fas fa-file-text"></i>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <p class="stat-title">Completion Time</p>
-                        <p class="stat-value">12:45</p>
-                    </div>
-                    <div class="stat-icon stat-icon-green">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <p class="stat-title">Average Score</p>
-                        <p class="stat-value">78.5%</p>
-                    </div>
-                    <div class="stat-icon stat-icon-blue">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                </div>
-
-                <div class="stat-card">
-                    <div class="stat-content">
-                        <p class="stat-title">Top Score</p>
-                        <p class="stat-value">95%</p>
-                    </div>
-                    <div class="stat-icon stat-icon-orange">
-                        <i class="fas fa-trophy"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quiz Cards -->
-            <div class="quiz-grid">
-                <div class="quiz-card quiz-purple">
-                    <div class="quiz-content">
-                        <div class="quiz-icon">💻</div>
-                        <div class="quiz-info">
-                            <h3>BASIC PROGRAMMING</h3>
-                            <button class="btn btn-quiz" data-quiz="BASIC PROGRAMMING">Start Quiz</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="quiz-card quiz-pink">
-                    <div class="quiz-content">
-                        <div class="quiz-icon">🌐</div>
-                        <div class="quiz-info">
-                            <h3>NETWORKING</h3>
-                            <button class="btn btn-quiz" data-quiz="NETWORKING">Start Quiz</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="quiz-card quiz-blue">
-                    <div class="quiz-content">
-                        <div class="quiz-icon">🎨</div>
-                        <div class="quiz-info">
-                            <h3>UI AND UX CONCEPTS</h3>
-                            <button class="btn btn-quiz" data-quiz="UI AND UX CONCEPTS">Start Quiz</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tables Section -->
-            <div class="tables-grid">
-                <!-- Top Students Table -->
-                <div class="card">
-                    <h3 class="card-title">TOP STUDENTS</h3>
-                    <p class="card-subtitle">Students who recently completed this quiz</p>
                     
-                    <div class="table-container">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Student</th>
-                                    <th>Score</th>
-                                    <th>Time Spent</th>
-                                    <th>Completed</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td class="font-medium">Bankai Cassis</td>
-                                    <td>85%</td>
-                                    <td>19:24</td>
-                                    <td class="text-muted">2 hours ago</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">JJ Champion</td>
-                                    <td>92%</td>
-                                    <td>18:24</td>
-                                    <td class="text-muted">2 hours ago</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Paul Pogj</td>
-                                    <td>92%</td>
-                                    <td>18:24</td>
-                                    <td class="text-muted">2 hours ago</td>
-                                </tr>
-                                <tr>
-                                    <td class="font-medium">Vinayoo Falti</td>
-                                    <td>95%</td>
-                                    <td>18:24</td>
-                                    <td class="text-muted">2 hours ago</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                    <div class="header-actions">
+                        <button class="btn btn-outline btn-sm">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn btn-outline btn-sm" id="share-btn">
+                            <i class="fas fa-share-alt"></i>
+                            Share
+                        </button>
+                        <button class="btn btn-primary btn-sm">
+                            Preview
+                        </button>
                     </div>
                 </div>
 
-                <!-- Question Performance -->
-                <div class="card">
-                    <h3 class="card-title">Question Performance</h3>
-                    <p class="card-subtitle">How students performed on each question</p>
-                    
-                    <div class="question-list">
-                        <div class="question-item">
-                            <div class="question-text">
-                                <span class="question-number">1.</span>
-                                <span>WHY IS JAVA THE BEST PRODI...?</span>
-                            </div>
-                            <span class="question-accuracy">92%</span>
+                <h2 class="page-title">Class Progress</h2>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-title">Total Completions</p>
+                            <p class="stat-value">28</p>
                         </div>
-                        <div class="question-item">
-                            <div class="question-text">
-                                <span class="question-number">2.</span>
-                                <span>WHAT IS AN ARRAY?</span>
-                            </div>
-                            <span class="question-accuracy">92%</span>
+                        <div class="stat-icon stat-icon-purple">
+                            <i class="fas fa-file-text"></i>
                         </div>
-                        <div class="question-item">
-                            <div class="question-text">
-                                <span class="question-number">3.</span>
-                                <span>HOW TO IMPLEMENT BINARY SEAR...?</span>
-                            </div>
-                            <span class="question-accuracy">92%</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-title">Completion Time</p>
+                            <p class="stat-value">12:45</p>
                         </div>
-                        <div class="question-item">
-                            <div class="question-text">
-                                <span class="question-number">4.</span>
-                                <span>Which of the following is NOT a...?</span>
-                            </div>
-                            <span class="question-accuracy">92%</span>
+                        <div class="stat-icon stat-icon-green">
+                            <i class="fas fa-clock"></i>
                         </div>
-                        <div class="question-item">
-                            <div class="question-text">
-                                <span class="question-number">5.</span>
-                                <span>What is the main function of SEA...?</span>
-                            </div>
-                            <span class="question-accuracy">92%</span>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-title">Average Score</p>
+                            <p class="stat-value">78.5%</p>
                         </div>
+                        <div class="stat-icon stat-icon-blue">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-content">
+                            <p class="stat-title">Top Score</p>
+                            <p class="stat-value">95%</p>
+                        </div>
+                        <div class="stat-icon stat-icon-orange">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quiz Cards -->
+                <div class="quiz-grid">
+                    <div class="quiz-card quiz-purple">
+                        <div class="quiz-content">
+                            <div class="quiz-icon">💻</div>
+                            <div class="quiz-info">
+                                <h3>BASIC PROGRAMMING</h3>
+                                <button class="btn btn-quiz" data-quiz="BASIC PROGRAMMING">Start Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card quiz-pink">
+                        <div class="quiz-content">
+                            <div class="quiz-icon">🌐</div>
+                            <div class="quiz-info">
+                                <h3>NETWORKING</h3>
+                                <button class="btn btn-quiz" data-quiz="NETWORKING">Start Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="quiz-card quiz-blue">
+                        <div class="quiz-content">
+                            <div class="quiz-icon">🎨</div>
+                            <div class="quiz-info">
+                                <h3>UI AND UX CONCEPTS</h3>
+                                <button class="btn btn-quiz" data-quiz="UI AND UX CONCEPTS">Start Quiz</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Section -->
+                <div class="tables-grid">
+                    <!-- Top Students Table -->
+                    <div class="card">
+                        <h3 class="card-title">TOP STUDENTS</h3>
+                        <p class="card-subtitle">Students who recently completed this quiz</p>
+                        
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Student</th>
+                                        <th>Score</th>
+                                        <th>Time Spent</th>
+                                        <th>Completed</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="font-medium">Bankai Cassis</td>
+                                        <td>85%</td>
+                                        <td>19:24</td>
+                                        <td class="text-muted">2 hours ago</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-medium">JJ Champion</td>
+                                        <td>92%</td>
+                                        <td>18:24</td>
+                                        <td class="text-muted">2 hours ago</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-medium">Paul Pogj</td>
+                                        <td>92%</td>
+                                        <td>18:24</td>
+                                        <td class="text-muted">2 hours ago</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="font-medium">Vinayoo Falti</td>
+                                        <td>95%</td>
+                                        <td>18:24</td>
+                                        <td class="text-muted">2 hours ago</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Question Performance -->
+                    <div class="card">
+                        <h3 class="card-title">Question Performance</h3>
+                        <p class="card-subtitle">How students performed on each question</p>
+                        
+                        <div class="question-list">
+                            <div class="question-item">
+                                <div class="question-text">
+                                    <span class="question-number">1.</span>
+                                    <span>WHY IS JAVA THE BEST PRODI...?</span>
+                                </div>
+                                <span class="question-accuracy">92%</span>
+                            </div>
+                            <div class="question-item">
+                                <div class="question-text">
+                                    <span class="question-number">2.</span>
+                                    <span>WHAT IS AN ARRAY?</span>
+                                </div>
+                                <span class="question-accuracy">92%</span>
+                            </div>
+                            <div class="question-item">
+                                <div class="question-text">
+                                    <span class="question-number">3.</span>
+                                    <span>HOW TO IMPLEMENT BINARY SEAR...?</span>
+                                </div>
+                                <span class="question-accuracy">92%</span>
+                            </div>
+                            <div class="question-item">
+                                <div class="question-text">
+                                    <span class="question-number">4.</span>
+                                    <span>Which of the following is NOT a...?</span>
+                                </div>
+                                <span class="question-accuracy">92%</span>
+                            </div>
+                            <div class="question-item">
+                                <div class="question-text">
+                                    <span class="question-number">5.</span>
+                                    <span>What is the main function of SEA...?</span>
+                                </div>
+                                <span class="question-accuracy">92%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Share Section -->
+                <div class="card share-card">
+                    <div class="share-content">
+                        <div>
+                            <h3 class="card-title">Share This Quiz</h3>
+                            <p class="card-subtitle">Share this quiz with students or colleagues</p>
+                        </div>
+                        <button class="btn btn-primary" id="share-quiz-btn">
+                            <i class="fas fa-share-alt"></i>
+                            Share Quiz
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Share Section -->
-            <div class="card share-card">
-                <div class="share-content">
-                    <div>
-                        <h3 class="card-title">Share This Quiz</h3>
-                        <p class="card-subtitle">Share this quiz with students or colleagues</p>
-                    </div>
-                    <button class="btn btn-primary" id="share-quiz-btn">
-                        <i class="fas fa-share-alt"></i>
-                        Share Quiz
+            <!-- Quizzes View -->
+            <div id="quizzes-view" class="page-view">
+                <div class="header">
+                    <h2 class="page-title">My Quizzes</h2>
+                    <button class="btn btn-primary" id="create-quiz-btn">
+                        <i class="fas fa-plus"></i>
+                        Create a Quiz
                     </button>
+                </div>
+
+                <div class="quizzes-list">
+                    <div class="quiz-list-card">
+                        <div class="quiz-list-icon quiz-purple">💻</div>
+                        <div class="quiz-list-info">
+                            <h3>Basic Programming Concepts</h3>
+                            <p class="quiz-list-meta">
+                                <span><i class="fas fa-question-circle"></i> 15 questions</span>
+                                <span><i class="fas fa-users"></i> 28 completions</span>
+                                <span><i class="fas fa-clock"></i> 20 min</span>
+                            </p>
+                        </div>
+                        <div class="quiz-list-actions">
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-play"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quiz-list-card">
+                        <div class="quiz-list-icon quiz-pink">🌐</div>
+                        <div class="quiz-list-info">
+                            <h3>Networking Fundamentals</h3>
+                            <p class="quiz-list-meta">
+                                <span><i class="fas fa-question-circle"></i> 20 questions</span>
+                                <span><i class="fas fa-users"></i> 15 completions</span>
+                                <span><i class="fas fa-clock"></i> 25 min</span>
+                            </p>
+                        </div>
+                        <div class="quiz-list-actions">
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-play"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quiz-list-card">
+                        <div class="quiz-list-icon quiz-blue">🎨</div>
+                        <div class="quiz-list-info">
+                            <h3>UI/UX Design Principles</h3>
+                            <p class="quiz-list-meta">
+                                <span><i class="fas fa-question-circle"></i> 12 questions</span>
+                                <span><i class="fas fa-users"></i> 22 completions</span>
+                                <span><i class="fas fa-clock"></i> 15 min</span>
+                            </p>
+                        </div>
+                        <div class="quiz-list-actions">
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-play"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quiz-list-card">
+                        <div class="quiz-list-icon quiz-purple">🗄️</div>
+                        <div class="quiz-list-info">
+                            <h3>Database Management Systems</h3>
+                            <p class="quiz-list-meta">
+                                <span><i class="fas fa-question-circle"></i> 18 questions</span>
+                                <span><i class="fas fa-users"></i> 12 completions</span>
+                                <span><i class="fas fa-clock"></i> 30 min</span>
+                            </p>
+                        </div>
+                        <div class="quiz-list-actions">
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-play"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quiz-list-card">
+                        <div class="quiz-list-icon quiz-pink">🔒</div>
+                        <div class="quiz-list-info">
+                            <h3>Cybersecurity Basics</h3>
+                            <p class="quiz-list-meta">
+                                <span><i class="fas fa-question-circle"></i> 25 questions</span>
+                                <span><i class="fas fa-users"></i> 18 completions</span>
+                                <span><i class="fas fa-clock"></i> 35 min</span>
+                            </p>
+                        </div>
+                        <div class="quiz-list-actions">
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-play"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="quiz-list-card">
+                        <div class="quiz-list-icon quiz-blue">☁️</div>
+                        <div class="quiz-list-info">
+                            <h3>Cloud Computing Essentials</h3>
+                            <p class="quiz-list-meta">
+                                <span><i class="fas fa-question-circle"></i> 16 questions</span>
+                                <span><i class="fas fa-users"></i> 10 completions</span>
+                                <span><i class="fas fa-clock"></i> 22 min</span>
+                            </p>
+                        </div>
+                        <div class="quiz-list-actions">
+                            <button class="btn btn-outline btn-sm">
+                                <i class="fas fa-edit"></i>
+                                Edit
+                            </button>
+                            <button class="btn btn-primary btn-sm">
+                                <i class="fas fa-play"></i>
+                                Start
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </main>
+
+    <!-- Create Quiz Modal -->
+    <div id="create-quiz-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create a New Quiz</h3>
+                <button class="modal-close" id="close-modal-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="quiz-title">Quiz Title</label>
+                    <input type="text" id="quiz-title" class="form-input" placeholder="Enter quiz title">
+                </div>
+
+                <div class="form-group">
+                    <label>Quiz Type</label>
+                    <div class="quiz-type-options">
+                        <label class="quiz-type-option">
+                            <input type="radio" name="quiz-type" value="multiple-choice" checked>
+                            <div class="quiz-type-card">
+                                <i class="fas fa-check-circle"></i>
+                                <span>Multiple Choice</span>
+                            </div>
+                        </label>
+                        <label class="quiz-type-option">
+                            <input type="radio" name="quiz-type" value="identification">
+                            <div class="quiz-type-card">
+                                <i class="fas fa-keyboard"></i>
+                                <span>Identification</span>
+                            </div>
+                        </label>
+                        <label class="quiz-type-option">
+                            <input type="radio" name="quiz-type" value="fill-in-blanks">
+                            <div class="quiz-type-card">
+                                <i class="fas fa-pen"></i>
+                                <span>Fill in the Blanks</span>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="num-questions">Number of Questions</label>
+                    <input type="number" id="num-questions" class="form-input" placeholder="e.g., 10" min="1" value="10">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-modal-btn">Cancel</button>
+                <button class="btn btn-primary" id="confirm-create-btn">
+                    <i class="fas fa-plus"></i>
+                    Create Quiz
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>

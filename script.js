@@ -38,13 +38,31 @@ document.addEventListener('click', (e) => {
 
 // Navigation tabs
 const navItems = document.querySelectorAll('.nav-item');
+const pageViews = {
+    'dashboard': document.getElementById('dashboard-view'),
+    'quizzes': document.getElementById('quizzes-view')
+};
+
 navItems.forEach(item => {
     item.addEventListener('click', () => {
         navItems.forEach(nav => nav.classList.remove('active'));
         item.classList.add('active');
         const tab = item.dataset.tab;
-        console.log('Navigating to:', tab);
-        // In a real app, you would switch views here
+        
+        // Hide all views
+        Object.values(pageViews).forEach(view => {
+            if (view) view.classList.remove('active');
+        });
+        
+        // Show selected view
+        if (pageViews[tab]) {
+            pageViews[tab].classList.add('active');
+        }
+        
+        // Close mobile menu
+        if (window.innerWidth <= 1024) {
+            sidebar.classList.remove('open');
+        }
     });
 });
 
@@ -86,6 +104,59 @@ window.addEventListener('resize', () => {
             sidebar.classList.remove('open');
         }
     }, 250);
+});
+
+// Create Quiz Modal
+const createQuizBtn = document.getElementById('create-quiz-btn');
+const createQuizModal = document.getElementById('create-quiz-modal');
+const closeModalBtn = document.getElementById('close-modal-btn');
+const cancelModalBtn = document.getElementById('cancel-modal-btn');
+const confirmCreateBtn = document.getElementById('confirm-create-btn');
+const modalOverlay = document.querySelector('.modal-overlay');
+
+function openModal() {
+    createQuizModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+    createQuizModal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+createQuizBtn.addEventListener('click', openModal);
+closeModalBtn.addEventListener('click', closeModal);
+cancelModalBtn.addEventListener('click', closeModal);
+modalOverlay.addEventListener('click', closeModal);
+
+confirmCreateBtn.addEventListener('click', () => {
+    const quizTitle = document.getElementById('quiz-title').value;
+    const quizType = document.querySelector('input[name="quiz-type"]:checked').value;
+    const numQuestions = document.getElementById('num-questions').value;
+    
+    if (!quizTitle.trim()) {
+        showToast('Please enter a quiz title', 'error');
+        return;
+    }
+    
+    if (!numQuestions || numQuestions < 1) {
+        showToast('Please enter a valid number of questions', 'error');
+        return;
+    }
+    
+    const quizTypeNames = {
+        'multiple-choice': 'Multiple Choice',
+        'identification': 'Identification',
+        'fill-in-blanks': 'Fill in the Blanks'
+    };
+    
+    showToast(`Creating ${quizTypeNames[quizType]} quiz "${quizTitle}" with ${numQuestions} questions!`);
+    closeModal();
+    
+    // Reset form
+    document.getElementById('quiz-title').value = '';
+    document.getElementById('num-questions').value = '10';
+    document.querySelector('input[name="quiz-type"][value="multiple-choice"]').checked = true;
 });
 
 console.log('Dashboard initialized successfully!');
