@@ -143,6 +143,22 @@ const quizData = {
     }
 };
 
+// Merge custom quizzes from localStorage (key: topify_quizzes)
+try {
+    const customRaw = localStorage.getItem('topify_quizzes');
+    if (customRaw) {
+        const custom = JSON.parse(customRaw);
+        Object.keys(custom).forEach(key => {
+            // ensure id exists
+            if (custom[key] && custom[key].id) {
+                quizData[custom[key].id] = custom[key];
+            }
+        });
+    }
+} catch (e) {
+    // ignore malformed storage
+}
+
 // State
 let currentQuiz = null;
 let currentQuestionIndex = 0;

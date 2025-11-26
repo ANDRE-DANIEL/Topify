@@ -19,6 +19,19 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
+// Apply saved theme (dark/light) from localStorage
+function applySavedTheme() {
+    try {
+        const theme = localStorage.getItem('topify_theme') || 'dark';
+        if (theme === 'light') document.body.classList.add('theme-light');
+        else document.body.classList.remove('theme-light');
+    } catch (e) {
+        // ignore
+    }
+}
+
+applySavedTheme();
+
 // Mobile menu toggle
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
 const sidebar = document.getElementById('sidebar');
@@ -144,19 +157,670 @@ confirmCreateBtn.addEventListener('click', () => {
         return;
     }
     
-    const quizTypeNames = {
-        'multiple-choice': 'Multiple Choice',
-        'identification': 'Identification',
-        'fill-in-blanks': 'Fill in the Blanks'
+    // scaffold a new quiz and save to localStorage
+    const quizIdBase = quizTitle.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') || 'custom-quiz';
+    const quizId = `${quizIdBase}-${Date.now()}`;
+
+    const typeIcons = {
+        'multiple-choice': '❓',
+        'identification': '🔤',
+        'fill-in-blanks': '✍️'
     };
-    
-    showToast(`Creating ${quizTypeNames[quizType]} quiz "${quizTitle}" with ${numQuestions} questions!`);
+
+    const questions = [];
+    for (let i = 0; i < Number(numQuestions); i++) {
+        if (quizType === 'multiple-choice') {
+            questions.push({
+                id: i + 1,
+                question: `Question ${i + 1}`,
+                options: ['Option 1', 'Option 2', 'Option 3', 'Option 4'],
+                correctAnswer: 0
+            });
+        } else {
+            questions.push({
+                id: i + 1,
+                question: `Question ${i + 1}`,
+                options: [],
+                correctAnswer: null
+            });
+        }
+    }
+
+    const newQuiz = {
+        id: quizId,
+        title: quizTitle,
+        icon: typeIcons[quizType] || '📝',
+        questions
+    };
+
+    // save
+    const saved = getCustomQuizzes();
+    saved[quizId] = newQuiz;
+    saveCustomQuizzes(saved);
+
+    showToast(`Created quiz "${quizTitle}" — now you can edit questions.`);
     closeModal();
-    
-    // Reset form
+
+    // reset form
     document.getElementById('quiz-title').value = '';
     document.getElementById('num-questions').value = '10';
     document.querySelector('input[name="quiz-type"][value="multiple-choice"]').checked = true;
+
+    // refresh list and open full-page editor for the created quiz
+    renderQuizzesList();
+    window.location.href = `editor.html?id=${encodeURIComponent(quizId)}`;
+});
+
+// -- localStorage helpers for custom quizzes --
+function getCustomQuizzes() {
+    try {
+        return JSON.parse(localStorage.getItem('topify_quizzes') || '{}');
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveCustomQuizzes(obj) {
+    localStorage.setItem('topify_quizzes', JSON.stringify(obj));
+}
+
+// Render quizzes list in the "My Quizzes" view
+function renderQuizzesList() {
+    const container = document.querySelector('.quizzes-list');
+    if (!container) return;
+
+    // built-in quick list (matching quiz.js ids)
+    const builtIns = [
+        {id: 'basic-programming', title: 'Basic Programming Concepts', icon: '💻', questions: 5},
+        {id: 'networking', title: 'Networking Fundamentals', icon: '🌐', questions: 5},
+        {id: 'ui-ux', title: 'UI/UX Design Principles', icon: '🎨', questions: 5}
+    ];
+
+    const customs = Object.values(getCustomQuizzes());
+
+    let html = '';
+
+    const renderCard = (q, isCustom) => {
+        const qCount = (q.questions && q.questions.length) || q.questions || 0;
+        return `
+            <div class="quiz-list-card">
+                <div class="quiz-list-icon">${q.icon || '📝'}</div>
+                <div class="quiz-list-info">
+                    <h3>${escapeHtml(q.title)}</h3>
+                    <p class="quiz-list-meta">
+                        <span><i class="fas fa-question-circle"></i> ${qCount} questions</span>
+                    </p>
+                </div>
+                <div class="quiz-list-actions">
+                    ${isCustom ? `
+                        <button class="btn btn-outline btn-sm" data-open-id="${q.id}" onclick="window.location.href='editor.html?id=${encodeURIComponent(q.id)}'">
+                            <i class="fas fa-edit"></i>
+                            Edit
+                        </button>
+                        <button class="btn btn-outline btn-sm" data-delete-id="${q.id}" style="color:#ff6b6b;border-color:rgba(255,107,107,0.12);">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    ` : ''}
+                    <button class="btn btn-primary btn-sm" data-start-id="${q.id}">
+                        <i class="fas fa-play"></i>
+                        Start
+                    </button>
+                </div>
+            </div>
+        `;
+    };
+
+    // built-ins first
+    builtIns.forEach(b => html += renderCard(b, false));
+    // then custom
+    customs.forEach(c => html += renderCard(c, true));
+
+    container.innerHTML = html;
+
+    // attach handlers
+    container.querySelectorAll('[data-start-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-start-id');
+            // navigate to quiz page with id
+            window.location.href = `quiz.html?id=${encodeURIComponent(id)}`;
+        });
+    });
+
+    // Edit buttons now navigate directly to `editor.html?id=...`
+
+    container.querySelectorAll('[data-delete-id]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const id = btn.getAttribute('data-delete-id');
+            deleteQuiz(id);
+        });
+    });
+}
+
+// Delete a custom quiz by id
+function deleteQuiz(quizId) {
+    if (!confirm('Delete this quiz? This action cannot be undone.')) return;
+    const quizzes = getCustomQuizzes();
+    if (!quizzes[quizId]) {
+        showToast('Quiz not found', 'error');
+        return;
+    }
+    delete quizzes[quizId];
+    saveCustomQuizzes(quizzes);
+    showToast('Quiz deleted', 'success');
+    // close editor if open for this quiz
+    const editingIdInput = document.getElementById('editing-quiz-id');
+    if (editingIdInput && editingIdInput.value === quizId) {
+        closeEditModal();
+    }
+    renderQuizzesList();
+}
+
+// Utility to escape HTML
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+
+// -- Edit modal logic --
+const editModal = document.getElementById('edit-quiz-modal');
+const closeEditModalBtn = document.getElementById('close-edit-modal-btn');
+const cancelEditBtn = document.getElementById('cancel-edit-btn');
+const saveEditBtn = document.getElementById('save-edit-btn');
+
+// Generic editor builder: can render into any container (modal body or full page)
+function buildEditor(container, quiz, options = {}) {
+    // options: { inModal: boolean }
+    container.innerHTML = '';
+
+    const topbar = document.createElement('div');
+    topbar.className = 'editor-topbar';
+    topbar.innerHTML = `
+        <button class="back-btn editor-back">
+            <i class="fas fa-arrow-left"></i>
+            Back to Quizzes
+        </button>
+        <div class="editor-title">${escapeHtml(quiz.title)}</div>
+        <div class="editor-actions">
+            <button id="header-save-btn" class="btn save-quiz-btn">
+                <i class="fas fa-save"></i>
+                Save Quiz
+            </button>
+        </div>
+    `;
+    container.appendChild(topbar);
+
+    const layout = document.createElement('div');
+    layout.className = 'edit-layout';
+
+    // Sidebar
+    const sidebarEl = document.createElement('aside');
+    sidebarEl.className = 'edit-sidebar';
+    sidebarEl.innerHTML = `
+        <div class="quiz-info-card">
+            <h4>Quiz Information</h4>
+            <div class="info-row"><span class="info-label">Type:</span> <span class="info-value">${quiz.questions && quiz.questions.length && quiz.questions[0] && quiz.questions[0].options && quiz.questions[0].options.length ? 'Multiple Choice' : 'Identification/Short Answer'}</span></div>
+            <div class="info-row"><span class="info-label">Questions:</span> <span id="questions-count" class="info-value">${quiz.questions.length}</span></div>
+        </div>
+        <button id="add-question-btn" class="btn btn-primary btn-block" style="margin-top:12px;">+ Add Question</button>
+    `;
+
+    // Main area
+    const mainEl = document.createElement('main');
+    mainEl.className = 'edit-main';
+
+    const mainPanel = document.createElement('div');
+    mainPanel.className = 'editor-main-panel';
+
+    const questionsArea = document.createElement('div');
+    questionsArea.id = 'questions-area';
+    questionsArea.className = 'questions-area';
+
+    mainPanel.appendChild(questionsArea);
+    mainEl.appendChild(mainPanel);
+
+    layout.appendChild(sidebarEl);
+    layout.appendChild(mainEl);
+    container.appendChild(layout);
+
+    // Now create question cards and wire interactions (same logic used previously)
+    function renderQuestionCardLocal(q, idx) {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.dataset.qIndex = idx;
+
+        const qHeader = document.createElement('div');
+        qHeader.className = 'question-card-header';
+        qHeader.innerHTML = `<h4>Question ${idx + 1}</h4><button class="btn btn-outline btn-sm remove-question">Remove</button>`;
+        card.appendChild(qHeader);
+
+        const qTextGroup = document.createElement('div');
+        qTextGroup.className = 'form-group';
+        const qLabel = document.createElement('label');
+        qLabel.textContent = 'Question';
+        const qInput = document.createElement('input');
+        qInput.type = 'text';
+        qInput.className = 'form-input edit-question-text';
+        qInput.value = q.question || '';
+        qTextGroup.appendChild(qLabel);
+        qTextGroup.appendChild(qInput);
+        card.appendChild(qTextGroup);
+
+        const optsContainer = document.createElement('div');
+        optsContainer.className = 'options-container-editor';
+
+        if (q.options && q.options.length) {
+            q.options.forEach((opt, optIdx) => {
+                const optRow = document.createElement('div');
+                optRow.className = 'option-row';
+
+                const optInput = document.createElement('input');
+                optInput.type = 'text';
+                optInput.className = 'form-input edit-option-text';
+                optInput.value = opt || '';
+
+                const checkBtn = document.createElement('button');
+                checkBtn.type = 'button';
+                checkBtn.className = 'option-check';
+                checkBtn.innerHTML = '<i class="fas fa-check"></i>';
+                if (q.correctAnswer === optIdx) checkBtn.classList.add('selected');
+
+                checkBtn.addEventListener('click', () => {
+                    optsContainer.querySelectorAll('.option-check').forEach(b => b.classList.remove('selected'));
+                    checkBtn.classList.add('selected');
+                });
+
+                const removeOpt = document.createElement('button');
+                removeOpt.type = 'button';
+                removeOpt.className = 'btn btn-outline btn-sm remove-option';
+                removeOpt.textContent = 'Remove';
+                removeOpt.addEventListener('click', () => optRow.remove());
+
+                optRow.appendChild(checkBtn);
+                optRow.appendChild(optInput);
+                optRow.appendChild(removeOpt);
+                optsContainer.appendChild(optRow);
+            });
+        } else {
+            const ansGroup = document.createElement('div');
+            ansGroup.className = 'form-group';
+            const ansLabel = document.createElement('label');
+            ansLabel.textContent = 'Answer';
+            const ansInput = document.createElement('input');
+            ansInput.type = 'text';
+            ansInput.className = 'form-input edit-answer-text';
+            ansInput.value = q.correctAnswer || '';
+            ansGroup.appendChild(ansLabel);
+            ansGroup.appendChild(ansInput);
+            optsContainer.appendChild(ansGroup);
+        }
+
+        const addOptBtn = document.createElement('button');
+        addOptBtn.type = 'button';
+        addOptBtn.className = 'btn btn-outline btn-sm add-option-btn';
+        addOptBtn.textContent = 'Add Option';
+        addOptBtn.addEventListener('click', () => {
+            const optRow = document.createElement('div');
+            optRow.className = 'option-row';
+            const optInput = document.createElement('input');
+            optInput.type = 'text';
+            optInput.className = 'form-input edit-option-text';
+            optInput.value = '';
+            const checkBtn = document.createElement('button');
+            checkBtn.type = 'button';
+            checkBtn.className = 'option-check';
+            checkBtn.innerHTML = '<i class="fas fa-check"></i>';
+            checkBtn.addEventListener('click', () => { optsContainer.querySelectorAll('.option-check').forEach(b => b.classList.remove('selected')); checkBtn.classList.add('selected'); });
+            const removeOpt = document.createElement('button');
+            removeOpt.type = 'button';
+            removeOpt.className = 'btn btn-outline btn-sm remove-option';
+            removeOpt.textContent = 'Remove';
+            removeOpt.addEventListener('click', () => optRow.remove());
+            optRow.appendChild(checkBtn);
+            optRow.appendChild(optInput);
+            optRow.appendChild(removeOpt);
+            optsContainer.appendChild(optRow);
+        });
+
+        card.appendChild(optsContainer);
+        card.appendChild(addOptBtn);
+
+        qHeader.querySelector('.remove-question').addEventListener('click', () => {
+            card.remove();
+            updateQuestionsCountLocal();
+            questionsArea.querySelectorAll('.question-card').forEach((c, i) => {
+                c.querySelector('.question-card-header h4').textContent = `Question ${i + 1}`;
+                c.dataset.qIndex = i;
+            });
+        });
+
+        return card;
+    }
+
+    function updateQuestionsCountLocal() {
+        // Do not update the sidebar count while the user is actively editing/adding
+        // questions. The count will be refreshed when the quiz is saved.
+        return;
+    }
+
+    // populate
+    quiz.questions.forEach((q, idx) => questionsArea.appendChild(renderQuestionCardLocal(q, idx)));
+
+    function ensurePlaceholderLocal() {
+        if (questionsArea.children.length === 0) {
+            const ph = document.createElement('div');
+            ph.className = 'no-questions-placeholder';
+            ph.innerHTML = `<div class="placeholder-icon">📄</div><h3>No questions yet</h3><p class="placeholder-sub">Click "Add Question" to start building your quiz</p>`;
+            questionsArea.appendChild(ph);
+        } else {
+            const ph = questionsArea.querySelector('.no-questions-placeholder');
+            if (ph) ph.remove();
+        }
+    }
+
+    ensurePlaceholderLocal();
+
+    const addQuestionBtn = container.querySelector('#add-question-btn');
+    addQuestionBtn.addEventListener('click', () => {
+        const ph = questionsArea.querySelector('.no-questions-placeholder'); if (ph) ph.remove();
+        const newQ = { id: questionsArea.children.length + 1, question: 'New question', options: ['Option 1','Option 2','Option 3','Option 4'], correctAnswer: 0 };
+        const card = renderQuestionCardLocal(newQ, questionsArea.querySelectorAll('.question-card').length);
+        questionsArea.appendChild(card);
+        updateQuestionsCountLocal();
+    });
+
+    // header back/save
+    const headerBack = container.querySelector('.editor-back');
+    if (headerBack) {
+        if (options.inModal) headerBack.addEventListener('click', () => closeEditModal());
+        else headerBack.addEventListener('click', () => window.location.href = 'index.html');
+    }
+
+    const headerSave = container.querySelector('#header-save-btn');
+    if (headerSave) headerSave.addEventListener('click', () => saveEditor(container, quiz.id));
+
+    // expose questionsArea for saveEditor to use by container
+    return;
+}
+
+// Save editor content for quizId by reading from the container (which may be modal body or page)
+function saveEditor(container, quizId) {
+    const quizzes = getCustomQuizzes();
+    const quiz = quizzes[quizId];
+    if (!quiz) return showToast('No quiz loaded', 'error');
+
+    const questionsArea = container.querySelector('#questions-area');
+    const qCards = questionsArea ? questionsArea.querySelectorAll('.question-card') : [];
+    const newQuestions = [];
+
+    qCards.forEach((card, idx) => {
+        const qText = card.querySelector('.edit-question-text') ? card.querySelector('.edit-question-text').value : `Question ${idx+1}`;
+        const optionRows = card.querySelectorAll('.option-row');
+        if (optionRows && optionRows.length) {
+            const opts = [];
+            let correctIdx = 0;
+            optionRows.forEach((orow, oidx) => {
+                const val = orow.querySelector('.edit-option-text') ? orow.querySelector('.edit-option-text').value : '';
+                opts.push(val);
+                if (orow.querySelector('.option-check') && orow.querySelector('.option-check').classList.contains('selected')) {
+                    correctIdx = oidx;
+                }
+            });
+            newQuestions.push({ id: idx+1, question: qText, options: opts, correctAnswer: correctIdx });
+        } else {
+            const ansInput = card.querySelector('.edit-answer-text');
+            newQuestions.push({ id: idx+1, question: qText, options: [], correctAnswer: ansInput ? ansInput.value : '' });
+        }
+    });
+
+    quiz.questions = newQuestions;
+    quizzes[quizId] = quiz;
+    saveCustomQuizzes(quizzes);
+    // Update editor sidebar count (if the editor container is passed in)
+    try {
+        const editorCounter = container && typeof container.querySelector === 'function' ? container.querySelector('#questions-count') : null;
+        if (editorCounter) editorCounter.textContent = newQuestions.length;
+    } catch (e) {
+        // ignore if container is not a DOM node
+    }
+    showToast('Quiz saved');
+    // if in modal, close; otherwise stay
+    const editModalBody = document.getElementById('edit-modal-body');
+    if (editModalBody && editModalBody.contains(container)) {
+        closeEditModal();
+    }
+    renderQuizzesList();
+}
+
+function openEditModal(quizId) {
+    const quizzes = getCustomQuizzes();
+    const quiz = quizzes[quizId];
+    if (!quiz) {
+        showToast('Quiz not found for editing', 'error');
+        return;
+    }
+
+    document.getElementById('editing-quiz-id').value = quizId;
+    document.getElementById('edit-modal-title').textContent = `Edit: ${quiz.title}`;
+
+    const body = document.getElementById('edit-modal-body');
+    // delegate to the generic builder for editor UI inside the modal body
+    buildEditor(body, quiz, { inModal: true });
+
+    // helper to render a question card
+    function renderQuestionCard(q, idx) {
+        const card = document.createElement('div');
+        card.className = 'question-card';
+        card.dataset.qIndex = idx;
+
+        const qHeader = document.createElement('div');
+        qHeader.className = 'question-card-header';
+        qHeader.innerHTML = `<h4>Question ${idx + 1}</h4><button class="btn btn-outline btn-sm remove-question">Remove</button>`;
+        card.appendChild(qHeader);
+
+        const qTextGroup = document.createElement('div');
+        qTextGroup.className = 'form-group';
+        const qLabel = document.createElement('label');
+        qLabel.textContent = 'Question';
+        const qInput = document.createElement('input');
+        qInput.type = 'text';
+        qInput.className = 'form-input edit-question-text';
+        qInput.value = q.question || '';
+        qTextGroup.appendChild(qLabel);
+        qTextGroup.appendChild(qInput);
+        card.appendChild(qTextGroup);
+
+        // options area
+        const optsContainer = document.createElement('div');
+        optsContainer.className = 'options-container-editor';
+
+        if (q.options && q.options.length) {
+            q.options.forEach((opt, optIdx) => {
+                const optRow = document.createElement('div');
+                optRow.className = 'option-row';
+
+                const optInput = document.createElement('input');
+                optInput.type = 'text';
+                optInput.className = 'form-input edit-option-text';
+                optInput.value = opt || '';
+
+                const checkBtn = document.createElement('button');
+                checkBtn.type = 'button';
+                checkBtn.className = 'option-check';
+                checkBtn.innerHTML = '<i class="fas fa-check"></i>';
+                if (q.correctAnswer === optIdx) checkBtn.classList.add('selected');
+
+                checkBtn.addEventListener('click', () => {
+                    // mark this as correct; unselect siblings
+                    optsContainer.querySelectorAll('.option-check').forEach(b => b.classList.remove('selected'));
+                    checkBtn.classList.add('selected');
+                });
+
+                const removeOpt = document.createElement('button');
+                removeOpt.type = 'button';
+                removeOpt.className = 'btn btn-outline btn-sm remove-option';
+                removeOpt.textContent = 'Remove';
+                removeOpt.addEventListener('click', () => {
+                    optRow.remove();
+                });
+
+                optRow.appendChild(checkBtn);
+                optRow.appendChild(optInput);
+                optRow.appendChild(removeOpt);
+                optsContainer.appendChild(optRow);
+            });
+        } else {
+            // identification / short answer
+            const ansGroup = document.createElement('div');
+            ansGroup.className = 'form-group';
+            const ansLabel = document.createElement('label');
+            ansLabel.textContent = 'Answer';
+            const ansInput = document.createElement('input');
+            ansInput.type = 'text';
+            ansInput.className = 'form-input edit-answer-text';
+            ansInput.value = q.correctAnswer || '';
+            ansGroup.appendChild(ansLabel);
+            ansGroup.appendChild(ansInput);
+            optsContainer.appendChild(ansGroup);
+        }
+
+        const addOptBtn = document.createElement('button');
+        addOptBtn.type = 'button';
+        addOptBtn.className = 'btn btn-outline btn-sm add-option-btn';
+        addOptBtn.textContent = 'Add Option';
+        addOptBtn.addEventListener('click', () => {
+            const newIdx = optsContainer.querySelectorAll('.option-row').length;
+            const optRow = document.createElement('div');
+            optRow.className = 'option-row';
+
+            const optInput = document.createElement('input');
+            optInput.type = 'text';
+            optInput.className = 'form-input edit-option-text';
+            optInput.value = '';
+
+            const checkBtn = document.createElement('button');
+            checkBtn.type = 'button';
+            checkBtn.className = 'option-check';
+            checkBtn.innerHTML = '<i class="fas fa-check"></i>';
+            checkBtn.addEventListener('click', () => {
+                optsContainer.querySelectorAll('.option-check').forEach(b => b.classList.remove('selected'));
+                checkBtn.classList.add('selected');
+            });
+
+            const removeOpt = document.createElement('button');
+            removeOpt.type = 'button';
+            removeOpt.className = 'btn btn-outline btn-sm remove-option';
+            removeOpt.textContent = 'Remove';
+            removeOpt.addEventListener('click', () => optRow.remove());
+
+            optRow.appendChild(checkBtn);
+            optRow.appendChild(optInput);
+            optRow.appendChild(removeOpt);
+            optsContainer.appendChild(optRow);
+        });
+
+        card.appendChild(optsContainer);
+        card.appendChild(addOptBtn);
+
+        // remove question
+        qHeader.querySelector('.remove-question').addEventListener('click', () => {
+            card.remove();
+            updateQuestionsCount();
+            // renumber
+            questionsArea.querySelectorAll('.question-card').forEach((c, i) => {
+                c.querySelector('.question-card-header h4').textContent = `Question ${i + 1}`;
+                c.dataset.qIndex = i;
+            });
+        });
+
+        return card;
+    }
+
+    function updateQuestionsCount() {
+        // Intentionally no-op during edit. Sidebar reflects saved state only.
+        return;
+    }
+
+    // populate existing questions
+    quiz.questions.forEach((q, idx) => {
+        const card = renderQuestionCard(q, idx);
+        questionsArea.appendChild(card);
+    });
+
+    // placeholder when no questions
+    function ensurePlaceholder() {
+        if (questionsArea.children.length === 0) {
+            const ph = document.createElement('div');
+            ph.className = 'no-questions-placeholder';
+            ph.innerHTML = `<div class="placeholder-icon">📄</div><h3>No questions yet</h3><p class="placeholder-sub">Click "Add Question" to start building your quiz</p>`;
+            questionsArea.appendChild(ph);
+        } else {
+            const ph = questionsArea.querySelector('.no-questions-placeholder');
+            if (ph) ph.remove();
+        }
+    }
+
+    ensurePlaceholder();
+
+    // add question handler
+    const addQuestionBtn = document.getElementById('add-question-btn');
+    addQuestionBtn.addEventListener('click', () => {
+        // remove placeholder if present
+        const ph = questionsArea.querySelector('.no-questions-placeholder');
+        if (ph) ph.remove();
+
+        const newQ = { id: questionsArea.children.length + 1, question: 'New question', options: ['Option 1','Option 2','Option 3','Option 4'], correctAnswer: 0 };
+        const card = renderQuestionCard(newQ, questionsArea.querySelectorAll('.question-card').length);
+        questionsArea.appendChild(card);
+        updateQuestionsCount();
+    });
+
+    // header back button behavior
+    const headerBack = body.querySelector('.editor-back');
+    if (headerBack) headerBack.addEventListener('click', () => closeEditModal());
+
+    // wire header save button to existing save handler
+    const headerSave = document.getElementById('header-save-btn');
+    if (headerSave) headerSave.addEventListener('click', () => saveEditBtn.click());
+
+    updateQuestionsCount();
+    ensurePlaceholder();
+
+    editModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeEditModal() {
+    editModal.classList.remove('active');
+    document.body.style.overflow = '';
+}
+
+closeEditModalBtn.addEventListener('click', closeEditModal);
+cancelEditBtn.addEventListener('click', closeEditModal);
+
+// Wire delete button in edit modal
+const deleteEditBtn = document.getElementById('delete-edit-btn');
+if (deleteEditBtn) {
+    deleteEditBtn.addEventListener('click', () => {
+        const quizId = document.getElementById('editing-quiz-id').value;
+        if (!quizId) return showToast('No quiz loaded', 'error');
+        deleteQuiz(quizId);
+    });
+}
+
+saveEditBtn.addEventListener('click', () => {
+    const quizId = document.getElementById('editing-quiz-id').value;
+    const container = document.getElementById('edit-modal-body');
+    saveEditor(container, quizId);
+});
+
+// render initially
+document.addEventListener('DOMContentLoaded', () => {
+    renderQuizzesList();
 });
 
 console.log('Dashboard initialized successfully!');

@@ -30,10 +30,11 @@
                 <i class="fas fa-users"></i>
                 <span>Students</span>
             </button>
-            <button class="nav-item" data-tab="settings">
+            <button class="nav-item" data-tab="settings" onclick="window.location.href='settings.html'">
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </button>
+            
         </nav>
     </aside>
 
@@ -58,6 +59,10 @@
                         <button class="btn btn-outline btn-sm">
                             <i class="fas fa-edit"></i>
                             Edit
+                        </button>
+                        <button class="btn btn-outline btn-sm" onclick="window.location.href='settings.html'" title="Settings">
+                            <i class="fas fa-cog"></i>
+                            Settings
                         </button>
                         <button class="btn btn-outline btn-sm" id="share-btn">
                             <i class="fas fa-share-alt"></i>
@@ -462,6 +467,31 @@
                 <button class="btn btn-primary" id="confirm-create-btn">
                     <i class="fas fa-plus"></i>
                     Create Quiz
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Quiz Modal -->
+    <div id="edit-quiz-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="edit-modal-title">Edit Quiz</h3>
+                <button class="modal-close" id="close-edit-modal-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="edit-modal-body">
+                <!-- Quiz editor fields will be injected here -->
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="editing-quiz-id" value="">
+                <button class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
+                <button class="btn btn-outline" id="delete-edit-btn" style="color:#ff6b6b;border-color:rgba(255,107,107,0.12);">Delete Quiz</button>
+                <button class="btn btn-primary" id="save-edit-btn">
+                    <i class="fas fa-save"></i>
+                    Save Quiz
                 </button>
             </div>
         </div>

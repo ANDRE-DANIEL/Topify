@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Topify - Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <!-- Sidebar (same structure as index) -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h1>TOPIFY</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item" data-tab="dashboard" onclick="window.location.href='index.html'">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-tab="quizzes" onclick="window.location.href='index.html'">
+                <i class="fas fa-file-alt"></i>
+                <span>Quizzes</span>
+            </button>
+            <button class="nav-item" data-tab="students">
+                <i class="fas fa-users"></i>
+                <span>Students</span>
+            </button>
+            <button class="nav-item active" data-tab="settings">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </nav>
+    </aside>
+
+    <button id="mobile-menu-btn" class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="header">
+                <h2 class="page-title">Settings</h2>
+            </div>
+
+            <div class="card">
+                <h3 class="card-title">Appearance</h3>
+                <p class="card-subtitle">Toggle between Dark and Light themes</p>
+                <div style="display:flex;align-items:center;gap:12px;margin-top:1rem;">
+                    <label class="switch">
+                        <input id="theme-toggle" type="checkbox">
+                        <span class="slider"></span>
+                    </label>
+                    <div>
+                        <strong id="theme-label">Dark Mode</strong>
+                        <div class="text-muted">Turn on/off dark theme</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="margin-top:1rem;">
+                <h3 class="card-title">Feedback</h3>
+                <p class="card-subtitle">Send feedback about Topify</p>
+                <form id="feedback-form" style="margin-top:1rem;display:flex;flex-direction:column;gap:0.75rem;">
+                    <input type="text" id="fb-name" class="form-input" placeholder="Your name (optional)">
+                    <input type="email" id="fb-email" class="form-input" placeholder="Your email (optional)">
+                    <textarea id="fb-message" class="form-input" rows="6" placeholder="Your feedback"></textarea>
+                    <div style="display:flex;gap:0.5rem;justify-content:flex-end;">
+                        <button type="button" id="fb-cancel" class="btn btn-outline">Cancel</button>
+                        <button type="submit" id="fb-submit" class="btn btn-primary">Send Feedback</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        // settings page script
+        (function(){
+            const toggle = document.getElementById('theme-toggle');
+            const label = document.getElementById('theme-label');
+            const body = document.body;
+
+            function applyTheme(theme){
+                if(theme === 'light'){
+                    body.classList.add('theme-light');
+                    toggle.checked = true;
+                    label.textContent = 'Light Mode';
+                } else {
+                    body.classList.remove('theme-light');
+                    toggle.checked = false;
+                    label.textContent = 'Dark Mode';
+                }
+            }
+
+            const saved = localStorage.getItem('topify_theme') || 'dark';
+            applyTheme(saved);
+
+            toggle.addEventListener('change', () => {
+                const newTheme = toggle.checked ? 'light' : 'dark';
+                localStorage.setItem('topify_theme', newTheme);
+                applyTheme(newTheme);
+                showToast('Theme updated', 'success');
+            });
+
+            // Feedback
+            const form = document.getElementById('feedback-form');
+            const btnCancel = document.getElementById('fb-cancel');
+            btnCancel.addEventListener('click', () => {
+                form.reset();
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const name = document.getElementById('fb-name').value.trim();
+                const email = document.getElementById('fb-email').value.trim();
+                const message = document.getElementById('fb-message').value.trim();
+                if(!message){
+                    showToast('Please enter feedback message', 'error');
+                    return;
+                }
+
+                const feedbacks = JSON.parse(localStorage.getItem('topify_feedbacks') || '[]');
+                feedbacks.push({ name, email, message, time: Date.now() });
+                localStorage.setItem('topify_feedbacks', JSON.stringify(feedbacks));
+
+                showToast('Thanks for your feedback!');
+                form.reset();
+            });
+        })();
+    </script>
+</body>
+</html>
