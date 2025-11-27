@@ -13,20 +13,23 @@
     <!-- Sidebar (same structure as index) -->
     <aside id="sidebar" class="sidebar">
         <div class="sidebar-header">
+            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
             <h1>TOPIFY</h1>
         </div>
         <nav class="sidebar-nav">
-            <button class="nav-item" data-tab="dashboard" onclick="window.location.href='index.html'">
+            <button class="nav-item" data-tab="dashboard" onclick="window.location.href='index.html#dashboard'">
                 <i class="fas fa-chart-line"></i>
                 <span>Dashboard</span>
             </button>
-            <button class="nav-item" data-tab="quizzes" onclick="window.location.href='index.html'">
+            <button class="nav-item" data-tab="quizzes" onclick="window.location.href='index.html#quizzes'">
                 <i class="fas fa-file-alt"></i>
                 <span>Quizzes</span>
             </button>
             <button class="nav-item" data-tab="students">
                 <i class="fas fa-users"></i>
-                <span>Students</span>
+                <span>Resources</span>
             </button>
             <button class="nav-item active" data-tab="settings">
                 <i class="fas fa-cog"></i>

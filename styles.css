@@ -39,7 +39,7 @@ body {
     width: 16rem;
     background-color: var(--sidebar-background);
     border-right: 1px solid var(--border);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, width 0.25s ease;
     z-index: 40;
 }
 
@@ -48,7 +48,10 @@ body {
 }
 
 .sidebar-header {
-    padding: 1.5rem;
+    padding: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
 }
 
 .sidebar-header h1 {
@@ -106,6 +109,34 @@ body {
     cursor: pointer;
     display: none;
 }
+
+/* Sidebar toggle button */
+.sidebar-toggle {
+    background: transparent;
+    border: none;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 6px;
+    margin-right: 0.5rem;
+}
+.sidebar-toggle i { font-size: 1.05rem; transition: transform 0.25s ease; }
+.sidebar-toggle.is-collapsed i { transform: rotate(90deg); }
+
+/* Collapsed sidebar (applied to body for easier layout control) */
+body.sidebar-collapsed .sidebar {
+    width: 8rem;
+}
+body.sidebar-collapsed .sidebar-header h1 {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+body.sidebar-collapsed .nav-item span { display: none; }
+body.sidebar-collapsed .nav-item { justify-content: center; padding-left: 0; padding-right: 0; }
+body.sidebar-collapsed .nav-item i { margin: 0; }
+body.sidebar-collapsed .main-content { margin-left: 8rem; }
 
 @media (max-width: 1024px) {
     .mobile-menu-btn {

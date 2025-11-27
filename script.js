@@ -22,20 +22,56 @@ function showToast(message, type = 'success') {
 // Apply saved theme (dark/light) from localStorage
 function applySavedTheme() {
     try {
-        // Default to light theme unless a user preference exists
-            // Force default to light on load: remove any saved preference so the
-            // site opens in light mode by default. Users can enable dark mode in
-            // Settings which will persist going forward.
-            if (localStorage.getItem('topify_theme')) {
-                localStorage.removeItem('topify_theme');
-            }
+        // Read the saved preference and apply it. Default to light.
+        const saved = localStorage.getItem('topify_theme') || 'light';
+        if (saved === 'dark') {
+            document.body.classList.add('theme-dark');
+        } else {
             document.body.classList.remove('theme-dark');
+        }
     } catch (e) {
         // ignore
     }
 }
 
 applySavedTheme();
+
+// --- Sidebar collapse handling ---
+const sidebarToggle = document.getElementById('sidebar-toggle');
+function applySavedSidebarState() {
+    try {
+        const collapsed = localStorage.getItem('topify_sidebar_collapsed') === 'true';
+        if (collapsed) {
+            document.body.classList.add('sidebar-collapsed');
+        } else {
+            document.body.classList.remove('sidebar-collapsed');
+        }
+        // reflect state on the toggle button (icon animation)
+        if (sidebarToggle) {
+            if (collapsed) sidebarToggle.classList.add('is-collapsed');
+            else sidebarToggle.classList.remove('is-collapsed');
+        }
+    } catch (e) {}
+}
+
+applySavedSidebarState();
+
+if (sidebarToggle) {
+    sidebarToggle.addEventListener('click', () => {
+        const isCollapsed = document.body.classList.toggle('sidebar-collapsed');
+        try {
+            localStorage.setItem('topify_sidebar_collapsed', isCollapsed ? 'true' : 'false');
+        } catch (e) {}
+        // toggle animated class on the button
+        sidebarToggle.classList.toggle('is-collapsed', isCollapsed);
+    });
+    // ensure icon state reflects saved collapsed value on load
+    const iconInit = sidebarToggle.querySelector('i');
+    if (iconInit) {
+        const saved = localStorage.getItem('topify_sidebar_collapsed') === 'true';
+        sidebarToggle.classList.toggle('is-collapsed', saved);
+    }
+}
 
 // Mobile menu toggle
 const mobileMenuBtn = document.getElementById('mobile-menu-btn');
@@ -61,28 +97,46 @@ const pageViews = {
     'quizzes': document.getElementById('quizzes-view')
 };
 
-navItems.forEach(item => {
-    item.addEventListener('click', () => {
-        navItems.forEach(nav => nav.classList.remove('active'));
-        item.classList.add('active');
-        const tab = item.dataset.tab;
-        
-        // Hide all views
-        Object.values(pageViews).forEach(view => {
-            if (view) view.classList.remove('active');
-        });
-        
-        // Show selected view
-        if (pageViews[tab]) {
-            pageViews[tab].classList.add('active');
-        }
-        
-        // Close mobile menu
-        if (window.innerWidth <= 1024) {
-            sidebar.classList.remove('open');
+function activateTab(tab) {
+    // Set active class on nav items
+    navItems.forEach(nav => {
+        if (nav.dataset && nav.dataset.tab === tab) {
+            nav.classList.add('active');
+        } else {
+            nav.classList.remove('active');
         }
     });
+
+    // Hide all views, then show the requested one
+    Object.values(pageViews).forEach(view => {
+        if (view) view.classList.remove('active');
+    });
+    if (pageViews[tab]) {
+        pageViews[tab].classList.add('active');
+    }
+
+    // Close mobile menu on smaller screens
+    if (window.innerWidth <= 1024) {
+        sidebar.classList.remove('open');
+    }
+}
+
+navItems.forEach(item => {
+    item.addEventListener('click', () => {
+        const tab = item.dataset.tab;
+        activateTab(tab);
+    });
 });
+
+// On page load, check URL hash or current page to open the correct tab
+let initialTab = 'dashboard';
+if (window.location.hash) {
+    initialTab = window.location.hash.slice(1);
+} else if (window.location.pathname && window.location.pathname.endsWith('settings.html')) {
+    // If we're on the separate settings page, highlight the Settings nav item
+    initialTab = 'settings';
+}
+activateTab(initialTab);
 
 // Quiz start buttons
 const quizButtons = document.querySelectorAll('.btn-quiz');
