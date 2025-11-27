@@ -135,6 +135,9 @@ if (window.location.hash) {
 } else if (window.location.pathname && window.location.pathname.endsWith('settings.html')) {
     // If we're on the separate settings page, highlight the Settings nav item
     initialTab = 'settings';
+} else if (window.location.pathname && window.location.pathname.endsWith('resources.html')) {
+    // Resources page lives on its own file; highlight the Resources (data-tab="students") nav item
+    initialTab = 'students';
 }
 activateTab(initialTab);
 

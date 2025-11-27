@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Topify - Resources</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Page-specific small tweaks for resource layout */
+        .resources-hero { margin-bottom: 1rem; }
+        .resources-grid { display:flex; gap:12px; flex-wrap:wrap; }
+        .resource-item { width: 220px; border:1px solid var(--border); border-radius:8px; background:var(--card); overflow:hidden; }
+        .resource-item .thumb { width:100%; height:160px; background:linear-gradient(180deg,#eee,#ddd); display:block; }
+        .resource-item .meta { padding:8px; font-weight:700; font-size:0.95rem; }
+
+        .video-grid { display:flex; gap:12px; flex-wrap:wrap; margin-top:0.75rem; }
+        .video-item { width:220px; border:1px solid var(--border); border-radius:8px; background:var(--card); overflow:hidden; }
+        .video-item .thumb { width:100%; height:100px; background:linear-gradient(180deg,#ccc,#bbb); }
+        .video-item .meta { padding:8px; font-size:0.9rem; color:var(--muted-foreground); }
+
+        @media (max-width:800px){ .resource-item, .video-item { width: calc(50% - 8px); } }
+        @media (max-width:480px){ .resource-item, .video-item { width:100%; } }
+    </style>
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>TOPIFY</h1>
+        </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item" data-tab="dashboard" onclick="window.location.href='index.html#dashboard'">
+                <i class="fas fa-chart-line"></i>
+                <span>Dashboard</span>
+            </button>
+            <button class="nav-item" data-tab="quizzes" onclick="window.location.href='index.html#quizzes'">
+                <i class="fas fa-file-alt"></i>
+                <span>Quizzes</span>
+            </button>
+            <button class="nav-item" data-tab="students" onclick="window.location.href='resources.html'">
+                <i class="fas fa-users"></i>
+                <span>Resources</span>
+            </button>
+            <button class="nav-item" data-tab="settings" onclick="window.location.href='settings.html'">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Mobile Menu Button -->
+    <button id="mobile-menu-btn" class="mobile-menu-btn">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="header">
+                <h2 class="page-title">TOPCIT Essence</h2>
+            </div>
+
+            <section class="resources-hero">
+                <div class="resources-grid">
+                    <div class="resource-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23dbeafe'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='28' fill='%230b1220'%3ETOPCIT%20Essence%20-%2001%3C/text%3E%3C/svg%3E" alt="Software Development">
+                        <div class="meta">01 Software Development</div>
+                    </div>
+                    <div class="resource-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23fde68a'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='26' fill='%230b1220'%3ETOPCIT%20Essence%20-%2002%3C/text%3E%3C/svg%3E" alt="Understanding and Using Data">
+                        <div class="meta">02 Understanding and Using Data</div>
+                    </div>
+                    <div class="resource-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23fbcfe8'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='26' fill='%230b1220'%3ETOPCIT%20Essence%20-%2003%3C/text%3E%3C/svg%3E" alt="Overview of System Architecture">
+                        <div class="meta">03 Overview of System Architecture</div>
+                    </div>
+                    <div class="resource-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='400'%3E%3Crect width='100%25' height='100%25' fill='%23c7f9cc'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='26' fill='%230b1220'%3ETOPCIT%20Essence%20-%2004%3C/text%3E%3C/svg%3E" alt="Understanding Information Security">
+                        <div class="meta">04 Understanding Information Security</div>
+                    </div>
+                </div>
+            </section>
+
+            <h3 style="margin-top:1.5rem;margin-bottom:0.5rem;">Videos</h3>
+            <section>
+                <div class="video-grid">
+                    <div class="video-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23fee2e2'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%230b1220'%3EVideo%2001%3C/text%3E%3C/svg%3E" alt="Video 01">
+                        <div class="meta">01 Introduction of the Software</div>
+                    </div>
+                    <div class="video-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23e0f2fe'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%230b1220'%3EVideo%2002%3C/text%3E%3C/svg%3E" alt="Video 02">
+                        <div class="meta">02 Understanding and Using Data</div>
+                    </div>
+                    <div class="video-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23fde68a'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%230b1220'%3EVideo%2003%3C/text%3E%3C/svg%3E" alt="Video 03">
+                        <div class="meta">03 Overview of System Architecture</div>
+                    </div>
+                    <div class="video-item">
+                        <img class="thumb" src="data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='240'%3E%3Crect width='100%25' height='100%25' fill='%23c7f9cc'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Arial' font-size='20' fill='%230b1220'%3EVideo%2004%3C/text%3E%3C/svg%3E" alt="Video 04">
+                        <div class="meta">04 Understanding Information Security</div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
