@@ -22,9 +22,14 @@ function showToast(message, type = 'success') {
 // Apply saved theme (dark/light) from localStorage
 function applySavedTheme() {
     try {
-        const theme = localStorage.getItem('topify_theme') || 'dark';
-        if (theme === 'light') document.body.classList.add('theme-light');
-        else document.body.classList.remove('theme-light');
+        // Default to light theme unless a user preference exists
+            // Force default to light on load: remove any saved preference so the
+            // site opens in light mode by default. Users can enable dark mode in
+            // Settings which will persist going forward.
+            if (localStorage.getItem('topify_theme')) {
+                localStorage.removeItem('topify_theme');
+            }
+            document.body.classList.remove('theme-dark');
     } catch (e) {
         // ignore
     }
@@ -242,8 +247,10 @@ function renderQuizzesList() {
 
     const renderCard = (q, isCustom) => {
         const qCount = (q.questions && q.questions.length) || q.questions || 0;
+        // Add an id to each card so we can link/scroll to it after save
+        const cardId = `quiz-card-${q.id}`;
         return `
-            <div class="quiz-list-card">
+            <div class="quiz-list-card" id="${cardId}">
                 <div class="quiz-list-icon">${q.icon || '📝'}</div>
                 <div class="quiz-list-info">
                     <h3>${escapeHtml(q.title)}</h3>
@@ -530,7 +537,12 @@ function buildEditor(container, quiz, options = {}) {
         const newQ = { id: questionsArea.children.length + 1, question: 'New question', options: ['Option 1','Option 2','Option 3','Option 4'], correctAnswer: 0 };
         const card = renderQuestionCardLocal(newQ, questionsArea.querySelectorAll('.question-card').length);
         questionsArea.appendChild(card);
-        updateQuestionsCountLocal();
+        // Smoothly bring the newly added question into view and focus its input
+        try {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const qInput = card.querySelector('.edit-question-text');
+            if (qInput) qInput.focus();
+        } catch (e) {}
     });
 
     // header back/save
@@ -592,6 +604,14 @@ function saveEditor(container, quizId) {
     const editModalBody = document.getElementById('edit-modal-body');
     if (editModalBody && editModalBody.contains(container)) {
         closeEditModal();
+    }
+    else {
+        // If the editor was used as a full-page editor (not the modal),
+        // redirect back to the quizzes list page (index.html) so the user
+        // sees their saved quiz in the list. Use a short delay so the
+        // "Quiz saved" toast can be seen.
+        // Redirect to the quizzes page and include an anchor to the saved quiz card
+        setTimeout(() => { window.location.href = `index.html#quiz-card-${encodeURIComponent(quizId)}`; }, 600);
     }
     renderQuizzesList();
 }
@@ -776,7 +796,12 @@ function openEditModal(quizId) {
         const newQ = { id: questionsArea.children.length + 1, question: 'New question', options: ['Option 1','Option 2','Option 3','Option 4'], correctAnswer: 0 };
         const card = renderQuestionCard(newQ, questionsArea.querySelectorAll('.question-card').length);
         questionsArea.appendChild(card);
-        updateQuestionsCount();
+        // Smoothly bring the newly added question into view and focus its input
+        try {
+            card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            const qInput = card.querySelector('.edit-question-text');
+            if (qInput) qInput.focus();
+        } catch (e) {}
     });
 
     // header back button behavior

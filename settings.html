@@ -54,7 +54,7 @@
                         <span class="slider"></span>
                     </label>
                     <div>
-                        <strong id="theme-label">Dark Mode</strong>
+                        <strong id="theme-label">Light Mode</strong>
                         <div class="text-muted">Turn on/off dark theme</div>
                     </div>
                 </div>
@@ -86,25 +86,29 @@
 
             function applyTheme(theme){
                 if(theme === 'light'){
-                    body.classList.add('theme-light');
-                    toggle.checked = true;
+                    body.classList.remove('theme-dark');
+                    toggle.checked = false; // unchecked = light
                     label.textContent = 'Light Mode';
                 } else {
-                    body.classList.remove('theme-light');
-                    toggle.checked = false;
+                    body.classList.add('theme-dark');
+                    toggle.checked = true; // checked = dark
                     label.textContent = 'Dark Mode';
                 }
             }
 
-            const saved = localStorage.getItem('topify_theme') || 'dark';
+            // Default theme is light unless a saved preference exists
+            const saved = localStorage.getItem('topify_theme') || 'light';
             applyTheme(saved);
 
             toggle.addEventListener('change', () => {
-                const newTheme = toggle.checked ? 'light' : 'dark';
+                // When checked -> dark mode, unchecked -> light mode
+                const newTheme = toggle.checked ? 'dark' : 'light';
                 localStorage.setItem('topify_theme', newTheme);
                 applyTheme(newTheme);
                 showToast('Theme updated', 'success');
             });
+
+            // no reset button
 
             // Feedback
             const form = document.getElementById('feedback-form');
