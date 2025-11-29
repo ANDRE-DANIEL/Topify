@@ -164,13 +164,80 @@ quizButtons.forEach(button => {
 const shareBtn = document.getElementById('share-btn');
 const shareQuizBtn = document.getElementById('share-quiz-btn');
 
-shareBtn.addEventListener('click', () => {
-    showToast('Quiz link copied to clipboard!');
-});
+// Toggle this to true if you want the share buttons to rickroll users instead of sharing.
+const RICKROLL_MODE = false;
+const RICKROLL_URL = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
 
-shareQuizBtn.addEventListener('click', () => {
-    showToast('Quiz link copied to clipboard!');
-});
+function fallbackCopyToClipboard(text){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+        return navigator.clipboard.writeText(text).then(() => true).catch(()=>false);
+    }
+    // older fallback: create temporary textarea
+    try{
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        return Promise.resolve(true);
+    }catch(e){
+        return Promise.resolve(false);
+    }
+}
+
+function doShare({url=document.location.href, title=document.title, text='Check this out!' } = {}){
+    if(RICKROLL_MODE){
+        window.open(RICKROLL_URL, '_blank');
+        return;
+    }
+
+    if(navigator.share){
+        navigator.share({title, text, url}).then(()=>{
+            showToast('Shared successfully');
+        }).catch((err)=>{
+            // user cancelled or failed — fallback to copy
+            fallbackCopyToClipboard(url).then(ok => {
+                if(ok) showToast('Link copied to clipboard');
+                else showToast('Unable to share or copy link', 'error');
+            });
+        });
+    } else {
+        // fallback: copy link
+        fallbackCopyToClipboard(url).then(ok => {
+            if(ok) showToast('Link copied to clipboard');
+            else window.open(url, '_blank');
+        });
+    }
+}
+
+if(shareBtn){
+    shareBtn.addEventListener('click', (e)=>{
+        // Hidden easter-egg: Shift+Click opens a rickroll. Regular click performs share.
+        if(e && e.shiftKey){
+            window.open(RICKROLL_URL, '_blank');
+            showToast('Surprise!');
+            return;
+        }
+        // share current page (dashboard)
+        const url = window.location.href;
+        doShare({url, title: 'Topify — Share', text: 'Check out this quiz dashboard on Topify!'});
+    });
+}
+
+if(shareQuizBtn){
+    shareQuizBtn.addEventListener('click', (e)=>{
+        // Hidden easter-egg: Shift+Click opens a rickroll. Regular click performs share.
+        if(e && e.shiftKey){
+            window.open(RICKROLL_URL, '_blank');
+            showToast('Surprise!');
+            return;
+        }
+        // attempt to share current quiz or page
+        const url = window.location.href;
+        doShare({url, title: 'Topify — Quiz', text: 'Try this quiz on Topify!'});
+    });
+}
 
 // Search functionality
 const searchInput = document.querySelector('.search-input');
