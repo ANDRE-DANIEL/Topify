@@ -6,494 +6,98 @@
     <title>Topify - Quiz Dashboard</title>
     <meta name="description" content="Track quiz progress, view student performance, and manage educational content">
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-</head>
-<body>
-    <!-- Toast Container -->
-    <div id="toast-container"></div>
-
-    <!-- Sidebar -->
-    <aside id="sidebar" class="sidebar">
-        <div class="sidebar-header">
-            <button id="sidebar-toggle" class="sidebar-toggle" aria-label="Toggle sidebar">
-                <i class="fas fa-bars"></i>
-            </button>
-            <h1>TOPIFY</h1>
-        </div>
-        <nav class="sidebar-nav">
-            <button class="nav-item active" data-tab="dashboard">
-                <i class="fas fa-chart-line"></i>
-                <span>Dashboard</span>
-            </button>
-            <button class="nav-item" data-tab="quizzes">
-                <i class="fas fa-file-alt"></i>
-                <span>Quizzes</span>
-            </button>
-            <button class="nav-item" data-tab="students" onclick="window.location.href='resources.html'">
-                <i class="fas fa-users"></i>
-                <span>Resources</span>
-            </button>
-            <button class="nav-item" data-tab="settings" onclick="window.location.href='settings.html'">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
-            </button>
-            
-        </nav>
-    </aside>
-
-    <!-- Mobile Menu Button -->
-    <button id="mobile-menu-btn" class="mobile-menu-btn">
-        <i class="fas fa-bars"></i>
-    </button>
-
-    <!-- Main Content -->
-    <main class="main-content">
-        <div class="container">
-            <!-- Dashboard View -->
-            <div id="dashboard-view" class="page-view active">
-                <!-- Header -->
-                <div class="header">
-                    <div class="search-container">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" class="search-input" placeholder="Search">
-                    </div>
-                    
-                    <div class="header-actions">
-                        <button class="btn btn-outline btn-sm" onclick="window.location.href='settings.html'" title="Settings">
-                            <i class="fas fa-cog"></i>
-                            Settings
-                        </button>
-                        <button class="btn btn-outline btn-sm" id="share-btn">
-                            <i class="fas fa-share-alt"></i>
-                            Share
-                        </button>
-                    </div>
-                </div>
-
-                <h2 class="page-title">Class Progress</h2>
-
-                <!-- Stats Grid -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-content">
-                            <p class="stat-title">Total Completions</p>
-                            <p class="stat-value">28</p>
-                        </div>
-                        <div class="stat-icon stat-icon-purple">
-                            <i class="fas fa-file-text"></i>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-content">
-                            <p class="stat-title">Completion Time</p>
-                            <p class="stat-value">12:45</p>
-                        </div>
-                        <div class="stat-icon stat-icon-green">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-content">
-                            <p class="stat-title">Average Score</p>
-                            <p class="stat-value">78.5%</p>
-                        </div>
-                        <div class="stat-icon stat-icon-blue">
-                            <i class="fas fa-chart-line"></i>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-content">
-                            <p class="stat-title">Top Score</p>
-                            <p class="stat-value">95%</p>
-                        </div>
-                        <div class="stat-icon stat-icon-orange">
-                            <i class="fas fa-trophy"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Quiz Cards -->
-                <div class="quiz-grid">
-                    <div class="quiz-card quiz-purple">
-                        <div class="quiz-content">
-                            <div class="quiz-icon">💻</div>
-                            <div class="quiz-info">
-                                <h3>BASIC PROGRAMMING</h3>
-                                <button class="btn btn-quiz" data-quiz="BASIC PROGRAMMING" onclick="window.location.href='quiz.html'">
-                                    Start Quiz
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="quiz-card quiz-pink">
-                        <div class="quiz-content">
-                            <div class="quiz-icon">🌐</div>
-                            <div class="quiz-info">
-                                <h3>NETWORKING</h3>
-                                <button class="btn btn-quiz" onclick="window.location.href='quiz.html?id=networking'">
-                                    Start Quiz
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="quiz-card quiz-blue">
-                        <div class="quiz-content">
-                            <div class="quiz-icon">🎨</div>
-                            <div class="quiz-info">
-                                <h3>UI/UX DESIGN</h3>
-                                <button class="btn btn-quiz" onclick="window.location.href='quiz.html?id=ui-ux'">
-                                    Start Quiz
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Tables Section -->
-                <div class="tables-grid">
-                    <!-- Top Students Table -->
-                    <div class="card">
-                        <h3 class="card-title">TOP STUDENTS</h3>
-                        <p class="card-subtitle">Students who recently completed this quiz</p>
-                        
-                        <div class="table-container">
-                            <table class="table">
-                                <thead>
-                                    <tr>
-                                        <th>Student</th>
-                                        <th>Score</th>
-                                        <th>Time Spent</th>
-                                        <th>Completed</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="font-medium">Bankai Cassis</td>
-                                        <td>85%</td>
-                                        <td>19:24</td>
-                                        <td class="text-muted">2 hours ago</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="font-medium">JJ Champion</td>
-                                        <td>92%</td>
-                                        <td>18:24</td>
-                                        <td class="text-muted">2 hours ago</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="font-medium">Paul Pogj</td>
-                                        <td>92%</td>
-                                        <td>18:24</td>
-                                        <td class="text-muted">2 hours ago</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="font-medium">Vinayoo Falti</td>
-                                        <td>95%</td>
-                                        <td>18:24</td>
-                                        <td class="text-muted">2 hours ago</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <!-- Question Performance -->
-                    <div class="card">
-                        <h3 class="card-title">Question Performance</h3>
-                        <p class="card-subtitle">How students performed on each question</p>
-                        
-                        <div class="question-list">
-                            <div class="question-item">
-                                <div class="question-text">
-                                    <span class="question-number">1.</span>
-                                    <span>WHY IS JAVA THE BEST PRODI...?</span>
-                                </div>
-                                <span class="question-accuracy">92%</span>
-                            </div>
-                            <div class="question-item">
-                                <div class="question-text">
-                                    <span class="question-number">2.</span>
-                                    <span>WHAT IS AN ARRAY?</span>
-                                </div>
-                                <span class="question-accuracy">92%</span>
-                            </div>
-                            <div class="question-item">
-                                <div class="question-text">
-                                    <span class="question-number">3.</span>
-                                    <span>HOW TO IMPLEMENT BINARY SEAR...?</span>
-                                </div>
-                                <span class="question-accuracy">92%</span>
-                            </div>
-                            <div class="question-item">
-                                <div class="question-text">
-                                    <span class="question-number">4.</span>
-                                    <span>Which of the following is NOT a...?</span>
-                                </div>
-                                <span class="question-accuracy">92%</span>
-                            </div>
-                            <div class="question-item">
-                                <div class="question-text">
-                                    <span class="question-number">5.</span>
-                                    <span>What is the main function of SEA...?</span>
-                                </div>
-                                <span class="question-accuracy">92%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Share Section -->
-                <div class="card share-card">
-                    <div class="share-content">
-                        <div>
-                            <h3 class="card-title">Share This Quiz</h3>
-                            <p class="card-subtitle">Share this quiz with students or colleagues</p>
-                        </div>
-                        <button class="btn btn-primary" id="share-quiz-btn">
-                            <i class="fas fa-share-alt"></i>
-                            Share Quiz
-                        </button>
-                    </div>
-                </div>
+    <!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width,initial-scale=1" />
+      <title>Topify — Welcome</title>
+      <link rel="stylesheet" href="landingpage.css">
+      <meta name="description" content="Welcome to Topify — organize and enjoy your content"> 
+    </head>
+    <body>
+      <div class="lp-wrapper">
+        <header class="lp-topbar">
+          <div class="lp-topbar-inner">
+            <div class="lp-brand">
+              <div class="lp-logo">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>
+                  <circle cx="12" cy="12" r="10" fill="#7C3AED" />
+                  <path d="M8 12l2.5 2L16 9" stroke="#0B1020" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <span class="lp-brand-text">TOPIFY</span>
             </div>
 
-            <!-- Quizzes View -->
-            <div id="quizzes-view" class="page-view">
-                <div class="header">
-                    <h2 class="page-title">My Quizzes</h2>
-                    <button class="btn btn-primary" id="create-quiz-btn">
-                        <i class="fas fa-plus"></i>
-                        Create a Quiz
-                    </button>
+            <nav class="lp-nav">
+              <a class="lp-nav-link" href="resources.html">Resources</a>
+              <a class="lp-nav-cta" href="dashboard.html">Get Started</a>
+            </nav>
+          </div>
+        </header>
+
+        <main class="lp-main">
+          <section class="lp-hero">
+            <div class="lp-hero-inner">
+              <span class="lp-eyebrow">Modern Quiz Platform</span>
+              <h1 class="lp-title">Create & Share <span class="accent">Interactive Quizzes</span></h1>
+              <p class="lp-lead">Engage your students with beautiful, interactive quizzes. Track progress, analyze performance, and make learning fun.</p>
+
+              <div class="lp-ctas">
+                <button id="enterBtn" class="btn btn-primary">Start Creating →</button>
+                <button id="learnBtn" class="btn btn-ghost">View Demo</button>
+              </div>
+
+              <!-- 'Don't show this again' removed -->
+            </div>
+          </section>
+
+          <section class="lp-features">
+            <div class="features-inner">
+              <h2 class="features-title">Everything You Need</h2>
+              <p class="features-sub">Powerful features to create engaging quizzes and track student performance</p>
+
+              <div class="feature-cards">
+                <div class="card">
+                  <div class="icon">⚡</div>
+                  <h3>Quick Quiz Creation</h3>
+                  <p>Build multiple choice, identification, and fill-in-the-blank quizzes in minutes.</p>
                 </div>
-
-                <div class="quizzes-list">
-                    <div class="quiz-list-card">
-                        <div class="quiz-list-icon quiz-purple">💻</div>
-                        <div class="quiz-list-info">
-                            <h3>Basic Programming Concepts</h3>
-                            <p class="quiz-list-meta">
-                                <span><i class="fas fa-question-circle"></i> 15 questions</span>
-                                <span><i class="fas fa-users"></i> 28 completions</span>
-                                <span><i class="fas fa-clock"></i> 20 min</span>
-                            </p>
-                        </div>
-                        <div class="quiz-list-actions">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="btn btn-primary btn-sm" onclick="window.location.href='quiz.html?id=basic-programming'">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="quiz-list-card">
-                        <div class="quiz-list-icon quiz-pink">🌐</div>
-                        <div class="quiz-list-info">
-                            <h3>Networking Fundamentals</h3>
-                            <p class="quiz-list-meta">
-                                <span><i class="fas fa-question-circle"></i> 20 questions</span>
-                                <span><i class="fas fa-users"></i> 15 completions</span>
-                                <span><i class="fas fa-clock"></i> 25 min</span>
-                            </p>
-                        </div>
-                        <div class="quiz-list-actions">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="btn btn-primary btn-sm" onclick="window.location.href='quiz.html?id=networking'">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-
-                        </div>
-                    </div>
-
-                    <div class="quiz-list-card">
-                        <div class="quiz-list-icon quiz-blue">🎨</div>
-                        <div class="quiz-list-info">
-                            <h3>UI/UX Design Principles</h3>
-                            <p class="quiz-list-meta">
-                                <span><i class="fas fa-question-circle"></i> 12 questions</span>
-                                <span><i class="fas fa-users"></i> 22 completions</span>
-                                <span><i class="fas fa-clock"></i> 15 min</span>
-                            </p>
-                        </div>
-                        <div class="quiz-list-actions">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="btn btn-primary btn-sm" onclick="window.location.href='quiz.html?id=ui-ux'">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-
-                        </div>
-                    </div>
-
-                    <div class="quiz-list-card">
-                        <div class="quiz-list-icon quiz-purple">🗄️</div>
-                        <div class="quiz-list-info">
-                            <h3>Database Management Systems</h3>
-                            <p class="quiz-list-meta">
-                                <span><i class="fas fa-question-circle"></i> 18 questions</span>
-                                <span><i class="fas fa-users"></i> 12 completions</span>
-                                <span><i class="fas fa-clock"></i> 30 min</span>
-                            </p>
-                        </div>
-                        <div class="quiz-list-actions">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="quiz-list-card">
-                        <div class="quiz-list-icon quiz-pink">🔒</div>
-                        <div class="quiz-list-info">
-                            <h3>Cybersecurity Basics</h3>
-                            <p class="quiz-list-meta">
-                                <span><i class="fas fa-question-circle"></i> 25 questions</span>
-                                <span><i class="fas fa-users"></i> 18 completions</span>
-                                <span><i class="fas fa-clock"></i> 35 min</span>
-                            </p>
-                        </div>
-                        <div class="quiz-list-actions">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-                        </div>
-                    </div>
-
-                    <div class="quiz-list-card">
-                        <div class="quiz-list-icon quiz-blue">☁️</div>
-                        <div class="quiz-list-info">
-                            <h3>Cloud Computing Essentials</h3>
-                            <p class="quiz-list-meta">
-                                <span><i class="fas fa-question-circle"></i> 16 questions</span>
-                                <span><i class="fas fa-users"></i> 10 completions</span>
-                                <span><i class="fas fa-clock"></i> 22 min</span>
-                            </p>
-                        </div>
-                        <div class="quiz-list-actions">
-                            <button class="btn btn-outline btn-sm">
-                                <i class="fas fa-edit"></i>
-                                Edit
-                            </button>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-play"></i>
-                                Start
-                            </button>
-                        </div>
-                    </div>
+                <div class="card">
+                  <div class="icon">📈</div>
+                  <h3>Track Performance</h3>
+                  <p>Monitor student progress with real-time analytics and insights.</p>
                 </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Create Quiz Modal -->
-    <div id="create-quiz-modal" class="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Create a New Quiz</h3>
-                <button class="modal-close" id="close-modal-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <label for="quiz-title">Quiz Title</label>
-                    <input type="text" id="quiz-title" class="form-input" placeholder="Enter quiz title">
+                <div class="card">
+                  <div class="icon">🔒</div>
+                  <h3>Secure & Reliable</h3>
+                  <p>Your data is safe with enterprise-grade security measures.</p>
                 </div>
-
-                <div class="form-group">
-                    <label>Quiz Type</label>
-                    <div class="quiz-type-options">
-                        <label class="quiz-type-option">
-                            <input type="radio" name="quiz-type" value="multiple-choice" checked>
-                            <div class="quiz-type-card">
-                                <i class="fas fa-check-circle"></i>
-                                <span>Multiple Choice</span>
-                            </div>
-                        </label>
-                        <label class="quiz-type-option">
-                            <input type="radio" name="quiz-type" value="identification">
-                            <div class="quiz-type-card">
-                                <i class="fas fa-keyboard"></i>
-                                <span>Identification</span>
-                            </div>
-                        </label>
-                        <label class="quiz-type-option">
-                            <input type="radio" name="quiz-type" value="fill-in-blanks">
-                            <div class="quiz-type-card">
-                                <i class="fas fa-pen"></i>
-                                <span>Fill in the Blanks</span>
-                            </div>
-                        </label>
-                    </div>
+                <div class="card">
+                  <div class="icon">📊</div>
+                  <h3>Detailed Analytics</h3>
+                  <p>Get comprehensive data on quiz completion, scores, and question accuracy.</p>
                 </div>
+              </div>
+            </div>
+          </section>
 
-                <div class="form-group">
-                    <label for="num-questions">Number of Questions</label>
-                    <input type="number" id="num-questions" class="form-input" placeholder="e.g., 10" min="1" value="10">
-                </div>
+          <section class="lp-cta-banner">
+            <div class="banner-inner">
+              <h2>Ready to Get Started?</h2>
+              <p>Join educators worldwide who are creating amazing quiz experiences with Topify.</p>
+              <button class="btn btn-primary" onclick="window.location.href='dashboard.html#quizzes'">Create Your First Quiz →</button>
             </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline" id="cancel-modal-btn">Cancel</button>
-                <button class="btn btn-primary" id="confirm-create-btn">
-                    <i class="fas fa-plus"></i>
-                    Create Quiz
-                </button>
-            </div>
-        </div>
-    </div>
+          </section>
+        </main>
 
-    <!-- Edit Quiz Modal -->
-    <div id="edit-quiz-modal" class="modal">
-        <div class="modal-overlay"></div>
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 id="edit-modal-title">Edit Quiz</h3>
-                <button class="modal-close" id="close-edit-modal-btn">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <div class="modal-body" id="edit-modal-body">
-                <!-- Quiz editor fields will be injected here -->
-            </div>
-            <div class="modal-footer">
-                <input type="hidden" id="editing-quiz-id" value="">
-                <button class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
-                <button class="btn btn-outline" id="delete-edit-btn" style="color:#ff6b6b;border-color:rgba(255,107,107,0.12);">Delete Quiz</button>
-                <button class="btn btn-primary" id="save-edit-btn">
-                    <i class="fas fa-save"></i>
-                    Save Quiz
-                </button>
-            </div>
-        </div>
-    </div>
+        <footer class="lp-footer">
+          <div class="lp-footer-inner">
+            <span>© 2024 Topify. All rights reserved.</span>
+          </div>
+        </footer>
+      </div>
 
-    <script src="script.js"></script>
-    <script src="quiz.js"></script>
-</body>
-</html>
+        <script src="landingpage.js"></script>
+      </body>
+      </html>

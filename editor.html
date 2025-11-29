@@ -22,7 +22,7 @@
       const id = params.get('id');
       if (!id) {
         alert('No quiz id provided');
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
         return;
       }
 
@@ -31,7 +31,7 @@
       const quiz = quizzes[id];
       if (!quiz) {
         alert('Quiz not found');
-        window.location.href = 'index.html';
+        window.location.href = 'dashboard.html';
         return;
       }
 
@@ -46,5 +46,8 @@
       buildEditor(editorContainer, quiz, { inModal: false });
     })();
   </script>
+    <button class="home-btn" aria-label="Back to Landing" onclick="window.location.href='index.html'">
+      <i class="fas fa-home"></i>
+    </button>
 </body>
 </html>

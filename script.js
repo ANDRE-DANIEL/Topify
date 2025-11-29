@@ -107,12 +107,22 @@ function activateTab(tab) {
         }
     });
 
-    // Hide all views, then show the requested one
+    // Hide all views, then show the requested one (with a smooth fade)
     Object.values(pageViews).forEach(view => {
-        if (view) view.classList.remove('active');
+        if (view) {
+            view.classList.remove('active');
+            // ensure fade-in class removed so it can be applied again
+            view.classList.remove('fade-in');
+        }
     });
     if (pageViews[tab]) {
-        pageViews[tab].classList.add('active');
+        const view = pageViews[tab];
+        view.classList.add('active');
+        // trigger a fade-in animation
+        requestAnimationFrame(() => {
+            view.classList.add('fade-in');
+            setTimeout(() => view.classList.remove('fade-in'), 450);
+        });
     }
 
     // Close mobile menu on smaller screens
@@ -606,7 +616,7 @@ function buildEditor(container, quiz, options = {}) {
     const headerBack = container.querySelector('.editor-back');
     if (headerBack) {
         if (options.inModal) headerBack.addEventListener('click', () => closeEditModal());
-        else headerBack.addEventListener('click', () => window.location.href = 'index.html');
+        else headerBack.addEventListener('click', () => window.location.href = 'dashboard.html');
     }
 
     const headerSave = container.querySelector('#header-save-btn');
@@ -668,7 +678,7 @@ function saveEditor(container, quizId) {
         // sees their saved quiz in the list. Use a short delay so the
         // "Quiz saved" toast can be seen.
         // Redirect to the quizzes page and include an anchor to the saved quiz card
-        setTimeout(() => { window.location.href = `index.html#quiz-card-${encodeURIComponent(quizId)}`; }, 600);
+        setTimeout(() => { window.location.href = `dashboard.html#quiz-card-${encodeURIComponent(quizId)}`; }, 600);
     }
     renderQuizzesList();
 }
