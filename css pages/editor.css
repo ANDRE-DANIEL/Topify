@@ -1,0 +1,25 @@
+/* Editor-specific overrides and layout helpers */
+
+/* Ensure the editor container uses the app container sizing and provides comfortable padding */
+#editor-root { padding: 1.25rem; }
+
+/* If the editor injects an edit-layout, make sure it fits nicely */
+.edit-layout { gap: 1rem; align-items: flex-start; }
+.edit-main { min-height: 520px; }
+.edit-sidebar { box-shadow: none; border-radius: 0.6rem; }
+
+/* Topbar tweaks */
+.editor-topbar { padding: 0.5rem 0; }
+.editor-title { font-size: 1.125rem; }
+
+/* Make form inputs more spacious inside editor */
+.edit-main .form-input { padding: 0.75rem; }
+
+/* Ensure question cards have clear spacing */
+.question-card { margin-bottom: 0.75rem; }
+
+/* Small screens: stack and allow full-width editor */
+@media (max-width: 900px) {
+  #editor-root { padding: 0.75rem; }
+  .edit-main { min-height: 360px; }
+}
