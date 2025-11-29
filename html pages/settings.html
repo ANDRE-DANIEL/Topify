@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Topify - Settings</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css pages/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -79,67 +79,9 @@
         </div>
     </main>
 
-    <script src="script.js"></script>
-    <script>
-        // settings page script
-        (function(){
-            const toggle = document.getElementById('theme-toggle');
-            const label = document.getElementById('theme-label');
-            const body = document.body;
-
-            function applyTheme(theme){
-                if(theme === 'light'){
-                    body.classList.remove('theme-dark');
-                    toggle.checked = false; // unchecked = light
-                    label.textContent = 'Light Mode';
-                } else {
-                    body.classList.add('theme-dark');
-                    toggle.checked = true; // checked = dark
-                    label.textContent = 'Dark Mode';
-                }
-            }
-
-            // Default theme is light unless a saved preference exists
-            const saved = localStorage.getItem('topify_theme') || 'light';
-            applyTheme(saved);
-
-            toggle.addEventListener('change', () => {
-                // When checked -> dark mode, unchecked -> light mode
-                const newTheme = toggle.checked ? 'dark' : 'light';
-                localStorage.setItem('topify_theme', newTheme);
-                applyTheme(newTheme);
-                showToast('Theme updated', 'success');
-            });
-
-            // no reset button
-
-            // Feedback
-            const form = document.getElementById('feedback-form');
-            const btnCancel = document.getElementById('fb-cancel');
-            btnCancel.addEventListener('click', () => {
-                form.reset();
-            });
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                const name = document.getElementById('fb-name').value.trim();
-                const email = document.getElementById('fb-email').value.trim();
-                const message = document.getElementById('fb-message').value.trim();
-                if(!message){
-                    showToast('Please enter feedback message', 'error');
-                    return;
-                }
-
-                const feedbacks = JSON.parse(localStorage.getItem('topify_feedbacks') || '[]');
-                feedbacks.push({ name, email, message, time: Date.now() });
-                localStorage.setItem('topify_feedbacks', JSON.stringify(feedbacks));
-
-                showToast('Thanks for your feedback!');
-                form.reset();
-            });
-        })();
-    </script>
-    <button class="home-btn" aria-label="Back to Landing" onclick="window.location.href='index.html'">
+    <script src="../js pages/script.js"></script>
+    <script src="../js pages/settings.js"></script>
+    <button class="home-btn" aria-label="Back to Landing" onclick="window.location.href='../index.html'">
         <i class="fas fa-home"></i>
     </button>
 </body>

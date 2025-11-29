@@ -1,0 +1,14 @@
+/* Extracted from resources.html - page-specific small tweaks for resource layout */
+.resources-hero { margin-bottom: 1rem; }
+.resources-grid { display:flex; gap:12px; flex-wrap:wrap; }
+.resource-item { width: 220px; border:1px solid var(--border); border-radius:8px; background:var(--card); overflow:hidden; }
+.resource-item .thumb { width:100%; height:160px; background:linear-gradient(180deg,#eee,#ddd); display:block; }
+.resource-item .meta { padding:8px; font-weight:700; font-size:0.95rem; }
+
+.video-grid { display:flex; gap:12px; flex-wrap:wrap; margin-top:0.75rem; }
+.video-item { width:220px; border:1px solid var(--border); border-radius:8px; background:var(--card); overflow:hidden; }
+.video-item .thumb { width:100%; height:100px; background:linear-gradient(180deg,#ccc,#bbb); }
+.video-item .meta { padding:8px; font-size:0.9rem; color:var(--muted-foreground); }
+
+@media (max-width:800px){ .resource-item, .video-item { width: calc(50% - 8px); } }
+@media (max-width:480px){ .resource-item, .video-item { width:100%; } }
