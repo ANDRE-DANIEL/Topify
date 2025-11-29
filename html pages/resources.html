@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="../css pages/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../css pages/resources.css">
+    <link rel="stylesheet" href="../css pages/whiteboard.css">
 </head>
 <body>
     <div id="toast-container"></div>
@@ -92,10 +93,33 @@
                     </div>
                 </div>
             </section>
+
+            <!-- Reviews removed -->
+
+            <!-- Whiteboard / Sketchboard -->
+            <section id="whiteboard" class="whiteboard-wrap">
+                <h3>Sketchboard</h3>
+                <p class="card-subtitle">Draw, sketch ideas or illustrate concepts. Use mouse or touch.</p>
+                <div class="whiteboard-controls">
+                    <label>Color: <input id="wb-color" type="color" value="#111111" class="wb-input" style="width:48px;height:34px;padding:2px;border-radius:6px;border:1px solid var(--border)"></label>
+                    <label>Size: <input id="wb-size" type="range" min="1" max="40" value="4"></label>
+                                        <!-- Fixed whiteboard size (1408×800) — adjustable controls removed -->
+                    <button id="wb-clear" class="wb-btn">Clear</button>
+                    <button id="wb-download" class="wb-btn">Download</button>
+                    <div style="flex:1"></div>
+                    <span class="lp-note" style="color:var(--muted);font-size:13px">Tip: Hold Shift while clicking Share to unlock a surprise.</span>
+                </div>
+
+                <div class="whiteboard-canvas-container">
+                    <canvas id="whiteboard-canvas" aria-label="Whiteboard canvas"></canvas>
+                    <!-- resizer removed -->
+                </div>
+            </section>
         </div>
     </main>
 
     <script src="../js pages/script.js"></script>
+    <script src="../js pages/whiteboard.js"></script>
     <button class="home-btn" aria-label="Back to Landing" onclick="window.location.href='../index.html'">
         <i class="fas fa-home"></i>
     </button>

@@ -1,0 +1,13 @@
+/* Whiteboard styles - lightweight and self-contained */
+.whiteboard-wrap{margin-top:24px;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;display:flex;gap:12px;flex-direction:column}
+.whiteboard-controls{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.whiteboard-controls label{font-size:13px;color:var(--muted)}
+.whiteboard-canvas-container{position:relative;border-radius:8px;overflow:hidden;border:1px solid rgba(0,0,0,0.06)}
+#whiteboard-canvas{display:block;width:100%;height:auto;aspect-ratio:1408/800;touch-action:none;background:#fff}
+.wb-btn{padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text);cursor:pointer}
+.wb-input{padding:6px 8px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text)}
+.reviews-removed-note{display:block;margin-top:28px;color:var(--muted);font-size:13px}
+
+@media (max-width:800px){
+  #whiteboard-canvas{aspect-ratio:16/9}
+}
