@@ -22,7 +22,7 @@
             </div>
 
             <nav class="lp-nav">
-              <a class="lp-nav-link" href="html pages/resources.html">Resources</a>
+              <a id="resourcesLink" class="lp-nav-link" href="html pages/resources.html">Resources</a>
               <a class="lp-nav-cta" href="html pages/dashboard.html">Get Started</a>
             </nav>
           </div>
@@ -88,6 +88,44 @@
         </footer>
       </div>
 
+        <script src="js pages/auth.js"></script>
+        <script>
+          // Intercept certain links/buttons and require login first
+          (function(){
+            function requireLoginThen(targetUrl){
+              // If user is authenticated allow navigation, otherwise redirect to login
+              try{
+                if(typeof isAuthenticated === 'function' && isAuthenticated()){
+                  window.location.href = targetUrl;
+                }else{
+                  // pass attempted target as `next` so you can redirect after login if desired
+                  const loginUrl = 'html pages/login.html' + '?next=' + encodeURIComponent(targetUrl);
+                  window.location.href = loginUrl;
+                }
+              }catch(e){
+                // fallback: send to login
+                window.location.href = 'html pages/login.html';
+              }
+            }
+
+            const resourcesLink = document.getElementById('resourcesLink');
+            if(resourcesLink){
+              resourcesLink.addEventListener('click', function(e){
+                e.preventDefault();
+                requireLoginThen(resourcesLink.getAttribute('href'));
+              });
+            }
+
+            const learnBtn = document.getElementById('learnBtn');
+            if(learnBtn){
+              learnBtn.addEventListener('click', function(e){
+                e.preventDefault();
+                // Demo could be the resources page or a special demo route; using resources.html
+                requireLoginThen('html pages/resources.html');
+              });
+            }
+          })();
+        </script>
         <script src="js pages/landingpage.js"></script>
       </body>
       </html>

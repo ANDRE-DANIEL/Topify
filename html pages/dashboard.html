@@ -67,6 +67,10 @@
                             <i class="fas fa-share-alt"></i>
                             Share
                         </button>
+                        <button class="btn btn-outline btn-sm" id="logout-btn" title="Logout">
+                            <i class="fas fa-sign-out-alt"></i>
+                            Logout
+                        </button>
                     </div>
                 </div>
 
@@ -495,6 +499,20 @@
 
     <script src="../js pages/script.js"></script>
     <script src="../js pages/quiz.js"></script>
+    <script src="../js pages/auth.js"></script>
+    <script>
+        // Protect this page and wire logout button
+        (function(){
+            try{
+                // If auth lib already loaded
+                if(typeof protectPage === 'function') protectPage('login.html');
+                else window.addEventListener('load', ()=>{ if(typeof protectPage === 'function') protectPage('login.html'); });
+
+                const logoutBtn = document.getElementById('logout-btn');
+                if(logoutBtn){ logoutBtn.addEventListener('click', function(){ try{ logout(); } catch(e){ sessionStorage.removeItem('topify_auth'); window.location.href='login.html'; } }); }
+            }catch(e){ console.warn('Auth protect error', e); }
+        })();
+    </script>
     <button class="home-btn" aria-label="Back to Landing" onclick="window.location.href='../index.html'">
         <i class="fas fa-home"></i>
     </button>

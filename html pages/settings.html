@@ -46,6 +46,12 @@
         <div class="container">
             <div class="header">
                 <h2 class="page-title">Settings</h2>
+                <div class="header-actions">
+                    <button class="btn btn-outline btn-sm" id="logout-btn" title="Logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                        Logout
+                    </button>
+                </div>
             </div>
 
             <div class="card">
@@ -80,6 +86,23 @@
     </main>
 
     <script src="../js pages/script.js"></script>
+    <script src="../js pages/auth.js"></script>
+    <script>
+        (function(){
+            try{
+                if(typeof protectPage === 'function') protectPage('login.html');
+                else window.addEventListener('load', ()=>{ if(typeof protectPage === 'function') protectPage('login.html'); });
+
+                const logoutBtn = document.getElementById('logout-btn');
+                if(logoutBtn){
+                    logoutBtn.addEventListener('click', function(){
+                        try{ logout(); }
+                        catch(e){ sessionStorage.removeItem('topify_auth'); window.location.href='login.html'; }
+                    });
+                }
+            }catch(e){ console.warn('Auth error on settings page', e); }
+        })();
+    </script>
     <script src="../js pages/settings.js"></script>
     <button class="home-btn" aria-label="Back to Landing" onclick="window.location.href='../index.html'">
         <i class="fas fa-home"></i>

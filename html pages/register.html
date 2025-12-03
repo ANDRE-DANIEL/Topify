@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topify — Register</title>
+  <link rel="stylesheet" href="../css pages/styles.css">
+  <script>
+    // Apply saved theme immediately to avoid flash of wrong theme
+    (function(){
+      try{
+        const saved = localStorage.getItem('topify_theme') || 'light';
+        if(saved === 'dark') document.documentElement.classList.add('theme-dark');
+        else document.documentElement.classList.remove('theme-dark');
+      }catch(e){}
+    })();
+  </script>
+  <style>
+    .auth-wrapper{ display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; background:var(--background); }
+    .auth-card{ width:420px; max-width:96%; }
+    .auth-sub { color:var(--muted-foreground); margin-bottom:1rem }
+    #reg-msg{ margin-top:0.5rem }
+  </style>
+</head>
+<body class="auth-page">
+  <div class="auth-wrapper">
+    <div class="card auth-card">
+      <h2 style="margin-bottom:6px;">Create an account</h2>
+      <p class="auth-sub">Register to manage quizzes and view progress</p>
+
+      <form id="register-form">
+        <div class="form-group">
+          <input id="username" class="form-input" placeholder="Choose a username" required />
+        </div>
+        <div class="form-group">
+          <input id="password" type="password" class="form-input" placeholder="Create a password" required />
+        </div>
+        <div id="reg-msg" role="status" aria-live="polite"></div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" type="submit">Create account</button>
+        </div>
+      </form>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:6px;">
+        <span class="small-muted">Already have an account?</span>
+        <button class="btn btn-outline" onclick="window.location.href='login.html'">Sign in</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js pages/auth.js"></script>
+  <script>
+    (function(){
+      const form = document.getElementById('register-form');
+      const msg = document.getElementById('reg-msg');
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault(); msg.textContent=''; msg.className='';
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        try{
+          await registerUser(u,p);
+          msg.textContent = 'Account created. Signing you in...'; msg.className='success';
+          // Auto-login
+          await loginUser(u,p);
+          setTimeout(()=> window.location.href = 'dashboard.html', 600);
+        }catch(err){
+          msg.textContent = err.message || 'Registration failed'; msg.className='error';
+        }
+      });
+
+      // If already logged in redirect
+      if(isAuthenticated()) window.location.href = 'dashboard.html';
+    })();
+  </script>
+</body>
+</html>

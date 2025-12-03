@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Topify — Login</title>
+  <link rel="stylesheet" href="../css pages/styles.css">
+  <script>
+    // Apply saved theme immediately to avoid flash of wrong theme
+    (function(){
+      try{
+        const saved = localStorage.getItem('topify_theme') || 'light';
+        if(saved === 'dark') document.documentElement.classList.add('theme-dark');
+        else document.documentElement.classList.remove('theme-dark');
+      }catch(e){}
+    })();
+  </script>
+  <style>
+    /* Center the auth card using existing theme */
+    .auth-wrapper{ display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; background:var(--background); }
+    .auth-card{ width:420px; max-width:96%; }
+    .auth-sub { color:var(--muted-foreground); margin-bottom:1rem }
+    #login-msg{ margin-top:0.5rem }
+  </style>
+</head>
+<body class="auth-page">
+  <div class="auth-wrapper">
+    <div class="card auth-card">
+      <h2 style="margin-bottom:6px;">Welcome back</h2>
+      <p class="auth-sub">Sign in to access your Topify dashboard</p>
+
+      <form id="login-form">
+        <div class="form-group">
+          <input id="username" class="form-input" placeholder="Username" required />
+        </div>
+        <div class="form-group">
+          <input id="password" type="password" class="form-input" placeholder="Password" required />
+        </div>
+        <div id="login-msg" role="status" aria-live="polite"></div>
+        <div class="form-group">
+          <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+        </div>
+      </form>
+
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:6px;">
+        <span class="small-muted">New here?</span>
+        <button class="btn btn-outline" onclick="window.location.href='register.html'">Create account</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="../js pages/auth.js"></script>
+  <script>
+    (function(){
+      const form = document.getElementById('login-form');
+      const msg = document.getElementById('login-msg');
+
+      form.addEventListener('submit', async (e)=>{
+        e.preventDefault();
+        msg.textContent=''; msg.className='';
+        const u = document.getElementById('username').value;
+        const p = document.getElementById('password').value;
+        try{
+          await loginUser(u,p);
+          msg.textContent = 'Signed in — redirecting...'; msg.className='success';
+          // small delay for UX then redirect to dashboard in same folder
+          setTimeout(()=> window.location.href = 'dashboard.html', 600);
+        }catch(err){
+          msg.textContent = err.message || 'Login failed'; msg.className='error';
+        }
+      });
+
+      // If already logged in redirect straight away
+      if(isAuthenticated()){
+        window.location.href = 'dashboard.html';
+      }
+    })();
+  </script>
+</body>
+</html>
