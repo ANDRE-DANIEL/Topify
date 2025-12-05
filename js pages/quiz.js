@@ -348,16 +348,18 @@ function displayReview() {
 }
 
 // Event listeners
+// Go back to main index
 document.getElementById('back-btn').addEventListener('click', () => {
-    window.location.href = '/';
+    window.location.href = '../index.html';
 });
 
 document.getElementById('prev-btn').addEventListener('click', handlePrevious);
 document.getElementById('next-btn').addEventListener('click', handleNext);
 document.getElementById('submit-btn').addEventListener('click', handleSubmit);
 
+// Go home (same behavior)
 document.getElementById('home-btn').addEventListener('click', () => {
-    window.location.href = '/';
+    window.location.href = '../index.html';
 });
 
 document.getElementById('retake-btn').addEventListener('click', () => {
