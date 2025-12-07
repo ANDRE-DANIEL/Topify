@@ -73,14 +73,22 @@
           msg.textContent = 'Account created. Signing you in...'; msg.className='success';
           // Auto-login
           await loginUser(u,p);
-          setTimeout(()=> window.location.href = 'dashboard.html', 600);
+          setTimeout(()=> {
+            const target = new URL('dashboard.html', window.location.href).href;
+            console.log('register: redirecting to', target);
+            window.location.href = target;
+          }, 600);
         }catch(err){
           msg.textContent = err.message || 'Registration failed'; msg.className='error';
         }
       });
 
       // If already logged in redirect
-      if(isAuthenticated()) window.location.href = 'dashboard.html';
+      if(isAuthenticated()){
+        const target = new URL('dashboard.html', window.location.href).href;
+        console.log('register: already authenticated, redirecting to', target);
+        window.location.href = target;
+      }
     })();
   </script>
 </body>

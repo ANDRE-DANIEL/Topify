@@ -348,23 +348,31 @@ function displayReview() {
 }
 
 // Event listeners
-// Go back to main index
-document.getElementById('back-btn').addEventListener('click', () => {
-    window.location.href = '../index.html';
-});
+// Event listeners (guarded to avoid errors when elements are absent)
+const backBtn = document.getElementById('back-btn');
+if (backBtn) backBtn.addEventListener('click', () => { window.location.href = '../index.html'; });
+else console.warn('quiz.js: back-btn not found');
 
-document.getElementById('prev-btn').addEventListener('click', handlePrevious);
-document.getElementById('next-btn').addEventListener('click', handleNext);
-document.getElementById('submit-btn').addEventListener('click', handleSubmit);
+const prevBtn = document.getElementById('prev-btn');
+if (prevBtn) prevBtn.addEventListener('click', handlePrevious);
+else console.warn('quiz.js: prev-btn not found');
+
+const nextBtn = document.getElementById('next-btn');
+if (nextBtn) nextBtn.addEventListener('click', handleNext);
+else console.warn('quiz.js: next-btn not found');
+
+const submitBtn = document.getElementById('submit-btn');
+if (submitBtn) submitBtn.addEventListener('click', handleSubmit);
+else console.warn('quiz.js: submit-btn not found');
 
 // Go home (same behavior)
-document.getElementById('home-btn').addEventListener('click', () => {
-    window.location.href = '../index.html';
-});
+const homeBtn = document.getElementById('home-btn');
+if (homeBtn) homeBtn.addEventListener('click', () => { window.location.href = '../index.html'; });
+else console.warn('quiz.js: home-btn not found');
 
-document.getElementById('retake-btn').addEventListener('click', () => {
-    window.location.reload();
-});
+const retakeBtn = document.getElementById('retake-btn');
+if (retakeBtn) retakeBtn.addEventListener('click', () => { window.location.reload(); });
+else console.warn('quiz.js: retake-btn not found');
 
 // Initialize on page load
 initQuiz();

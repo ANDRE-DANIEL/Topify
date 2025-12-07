@@ -129,7 +129,7 @@
                 </div>
 
                 <!-- Quiz Cards -->
-                <div class="quiz-grid">
+                <div id="quiz-grid" class="quiz-grid">
                     <div class="quiz-card quiz-purple">
                         <div class="quiz-content">
                             <div class="quiz-icon">💻</div>
@@ -498,10 +498,30 @@
                 <input type="hidden" id="editing-quiz-id" value="">
                 <button class="btn btn-outline" id="cancel-edit-btn">Cancel</button>
                 <button class="btn btn-outline" id="delete-edit-btn" style="color:#ff6b6b;border-color:rgba(255,107,107,0.12);">Delete Quiz</button>
-                <button class="btn btn-primary" id="save-edit-btn">
+                <button type="button" class="btn btn-primary" id="save-edit-btn" data-target="#quiz-grid">
                     <i class="fas fa-save"></i>
                     Save Quiz
                 </button>
+            </div>
+        </div>
+    </div>  
+
+    <!-- Confirm Delete Modal -->
+    <div id="delete-quiz-modal" class="modal">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="confirm-delete-title">Confirm Delete</h3>
+                <button class="modal-close" id="cancel-delete-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p id="confirm-delete-msg">Delete this quiz? This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" id="cancel-delete-action">Cancel</button>
+                <button class="btn btn-danger" id="confirm-delete-btn">Delete</button>
             </div>
         </div>
     </div>

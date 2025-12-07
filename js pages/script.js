@@ -19,6 +19,57 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
+// Try to resolve the correct dashboard URL from various candidate paths
+async function resolveAndNavigateDashboard(anchor = '') {
+    const candidates = [
+        'dashboard.html',
+        './dashboard.html',
+        '../dashboard.html',
+        'html pages/dashboard.html',
+        '../html pages/dashboard.html',
+        '/html pages/dashboard.html'
+    ];
+
+    for (const c of candidates) {
+        try {
+            const url = new URL(c + anchor, window.location.href).href;
+            // Try a HEAD request to see if the resource exists (may fail on file:// or CORS)
+            try {
+                const res = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+                if (res && (res.ok || res.status === 0)) {
+                    console.log('resolveAndNavigateDashboard: found dashboard at', url);
+                    window.location.href = url;
+                    return;
+                }
+            } catch (e) {
+                // fetch may fail (file:// or blocked). Fall back to fast existence check using Image trick
+                try {
+                    await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => resolve();
+                        img.onerror = () => reject();
+                        img.src = url;
+                        // timeout in 800ms
+                        setTimeout(() => reject(new Error('timeout')), 800);
+                    });
+                    console.log('resolveAndNavigateDashboard: image probe succeeded, navigating to', url);
+                    window.location.href = url;
+                    return;
+                } catch (e2) {
+                    // probe failed — try next candidate
+                }
+            }
+        } catch (e) {
+            // invalid URL composition, skip
+        }
+    }
+
+    // Fallback: navigate to a reasonable default (project's html pages folder)
+    const fallback = new URL('html pages/dashboard.html' + anchor, window.location.href).href;
+    console.warn('resolveAndNavigateDashboard: falling back to', fallback);
+    window.location.href = fallback;
+}
+
 // Apply saved theme (dark/light) from localStorage
 function applySavedTheme() {
     try {
@@ -439,8 +490,24 @@ function renderQuizzesList() {
 }
 
 // Delete a custom quiz by id
+// Delete a custom quiz by id (shows a modal confirmation)
 function deleteQuiz(quizId) {
-    if (!confirm('Delete this quiz? This action cannot be undone.')) return;
+    const deleteModal = document.getElementById('delete-quiz-modal');
+    if (!deleteModal) {
+        // fallback to native confirm if modal not present
+        if (!confirm('Delete this quiz? This action cannot be undone.')) return;
+        performDelete(quizId);
+        return;
+    }
+    // store target id on modal dataset and open it
+    deleteModal.dataset.targetId = quizId;
+    const msg = document.getElementById('confirm-delete-msg');
+    if (msg) msg.textContent = 'Delete this quiz? This action cannot be undone.';
+    deleteModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+}
+
+function performDelete(quizId) {
     const quizzes = getCustomQuizzes();
     if (!quizzes[quizId]) {
         showToast('Quiz not found', 'error');
@@ -546,7 +613,12 @@ function buildEditor(container, quiz, options = {}) {
         const qInput = document.createElement('input');
         qInput.type = 'text';
         qInput.className = 'form-input edit-question-text';
-        qInput.value = q.question || '';
+        // If the question text is a scaffold (e.g. "Question 1" or "New question"),
+        // show it as a placeholder instead of pre-filling the input so the user
+        // can type without deleting the default text.
+        const isScaffoldQ = typeof q.question === 'string' && (/^Question\s*\d+/i.test(q.question) || q.question === 'New question');
+        qInput.placeholder = q.question || `Question ${idx + 1}`;
+        qInput.value = isScaffoldQ ? '' : (q.question || '');
         qTextGroup.appendChild(qLabel);
         qTextGroup.appendChild(qInput);
         card.appendChild(qTextGroup);
@@ -562,7 +634,9 @@ function buildEditor(container, quiz, options = {}) {
                 const optInput = document.createElement('input');
                 optInput.type = 'text';
                 optInput.className = 'form-input edit-option-text';
-                optInput.value = opt || '';
+                const isScaffoldOpt = typeof opt === 'string' && (/^Option\s*\d+/i.test(opt));
+                optInput.placeholder = opt || `Option ${optIdx + 1}`;
+                optInput.value = isScaffoldOpt ? '' : (opt || '');
 
                 const checkBtn = document.createElement('button');
                 checkBtn.type = 'button';
@@ -594,7 +668,8 @@ function buildEditor(container, quiz, options = {}) {
             const ansInput = document.createElement('input');
             ansInput.type = 'text';
             ansInput.className = 'form-input edit-answer-text';
-            ansInput.value = q.correctAnswer || '';
+            ansInput.placeholder = q.correctAnswer || '';
+            ansInput.value = (q.correctAnswer && typeof q.correctAnswer === 'string' && q.correctAnswer.trim().length) ? q.correctAnswer : '';
             ansGroup.appendChild(ansLabel);
             ansGroup.appendChild(ansInput);
             optsContainer.appendChild(ansGroup);
@@ -610,6 +685,7 @@ function buildEditor(container, quiz, options = {}) {
             const optInput = document.createElement('input');
             optInput.type = 'text';
             optInput.className = 'form-input edit-option-text';
+            optInput.placeholder = `Option ${optsContainer.querySelectorAll('.option-row').length + 1}`;
             optInput.value = '';
             const checkBtn = document.createElement('button');
             checkBtn.type = 'button';
@@ -683,7 +759,10 @@ function buildEditor(container, quiz, options = {}) {
     const headerBack = container.querySelector('.editor-back');
     if (headerBack) {
         if (options.inModal) headerBack.addEventListener('click', () => closeEditModal());
-        else headerBack.addEventListener('click', () => window.location.href = 'dashboard.html');
+        else headerBack.addEventListener('click', () => {
+            const target = new URL('dashboard.html', window.location.href);
+            window.location.href = target.href;
+        });
     }
 
     const headerSave = container.querySelector('#header-save-btn');
@@ -704,13 +783,15 @@ function saveEditor(container, quizId) {
     const newQuestions = [];
 
     qCards.forEach((card, idx) => {
-        const qText = card.querySelector('.edit-question-text') ? card.querySelector('.edit-question-text').value : `Question ${idx+1}`;
+        const qEl = card.querySelector('.edit-question-text');
+        const qText = qEl ? (qEl.value.trim() || qEl.placeholder || `Question ${idx+1}`) : `Question ${idx+1}`;
         const optionRows = card.querySelectorAll('.option-row');
         if (optionRows && optionRows.length) {
             const opts = [];
             let correctIdx = 0;
             optionRows.forEach((orow, oidx) => {
-                const val = orow.querySelector('.edit-option-text') ? orow.querySelector('.edit-option-text').value : '';
+                const valEl = orow.querySelector('.edit-option-text');
+                const val = valEl ? (valEl.value.trim() || valEl.placeholder || '') : '';
                 opts.push(val);
                 if (orow.querySelector('.option-check') && orow.querySelector('.option-check').classList.contains('selected')) {
                     correctIdx = oidx;
@@ -719,7 +800,8 @@ function saveEditor(container, quizId) {
             newQuestions.push({ id: idx+1, question: qText, options: opts, correctAnswer: correctIdx });
         } else {
             const ansInput = card.querySelector('.edit-answer-text');
-            newQuestions.push({ id: idx+1, question: qText, options: [], correctAnswer: ansInput ? ansInput.value : '' });
+            const ansVal = ansInput ? (ansInput.value.trim() || ansInput.placeholder || '') : '';
+            newQuestions.push({ id: idx+1, question: qText, options: [], correctAnswer: ansVal });
         }
     });
 
@@ -741,11 +823,23 @@ function saveEditor(container, quizId) {
     }
     else {
         // If the editor was used as a full-page editor (not the modal),
-        // redirect back to the quizzes list page (index.html) so the user
-        // sees their saved quiz in the list. Use a short delay so the
-        // "Quiz saved" toast can be seen.
-        // Redirect to the quizzes page and include an anchor to the saved quiz card
-        setTimeout(() => { window.location.href = `dashboard.html#quiz-card-${encodeURIComponent(quizId)}`; }, 600);
+        // first try going back in history (fast and reliable when the
+        // editor was opened from the dashboard). If that fails, fall back
+        // to the resolver which probes likely dashboard locations.
+        const anchor = '#quiz-grid';
+        showToast('Quiz saved — returning to dashboard...', 'success');
+
+        const before = window.location.href;
+        try { history.back(); } catch (e) { /* ignore */ }
+
+        setTimeout(() => {
+            if (window.location.href === before) {
+                console.log('history.back did not change location; falling back to resolver for', anchor);
+                resolveAndNavigateDashboard(anchor);
+            } else {
+                console.log('history.back succeeded, current location:', window.location.href);
+            }
+        }, 500);
     }
     renderQuizzesList();
 }
@@ -783,7 +877,9 @@ function openEditModal(quizId) {
         const qInput = document.createElement('input');
         qInput.type = 'text';
         qInput.className = 'form-input edit-question-text';
-        qInput.value = q.question || '';
+        const isScaffoldQ = typeof q.question === 'string' && (/^Question\s*\d+/i.test(q.question) || q.question === 'New question');
+        qInput.placeholder = q.question || `Question ${idx + 1}`;
+        qInput.value = isScaffoldQ ? '' : (q.question || '');
         qTextGroup.appendChild(qLabel);
         qTextGroup.appendChild(qInput);
         card.appendChild(qTextGroup);
@@ -800,7 +896,9 @@ function openEditModal(quizId) {
                 const optInput = document.createElement('input');
                 optInput.type = 'text';
                 optInput.className = 'form-input edit-option-text';
-                optInput.value = opt || '';
+                const isScaffoldOpt = typeof opt === 'string' && (/^Option\s*\d+/i.test(opt));
+                optInput.placeholder = opt || `Option ${optIdx + 1}`;
+                optInput.value = isScaffoldOpt ? '' : (opt || '');
 
                 const checkBtn = document.createElement('button');
                 checkBtn.type = 'button';
@@ -836,7 +934,8 @@ function openEditModal(quizId) {
             const ansInput = document.createElement('input');
             ansInput.type = 'text';
             ansInput.className = 'form-input edit-answer-text';
-            ansInput.value = q.correctAnswer || '';
+            ansInput.placeholder = q.correctAnswer || '';
+            ansInput.value = (q.correctAnswer && typeof q.correctAnswer === 'string' && q.correctAnswer.trim().length) ? q.correctAnswer : '';
             ansGroup.appendChild(ansLabel);
             ansGroup.appendChild(ansInput);
             optsContainer.appendChild(ansGroup);
@@ -854,6 +953,7 @@ function openEditModal(quizId) {
             const optInput = document.createElement('input');
             optInput.type = 'text';
             optInput.className = 'form-input edit-option-text';
+            optInput.placeholder = `Option ${optsContainer.querySelectorAll('.option-row').length + 1}`;
             optInput.value = '';
 
             const checkBtn = document.createElement('button');
@@ -975,7 +1075,46 @@ saveEditBtn.addEventListener('click', () => {
     const quizId = document.getElementById('editing-quiz-id').value;
     const container = document.getElementById('edit-modal-body');
     saveEditor(container, quizId);
+    // If the save button has a data-target (anchor), navigate there after modal closes
+    try {
+        const targetAnchor = saveEditBtn.dataset && saveEditBtn.dataset.target ? saveEditBtn.dataset.target : null;
+        if (targetAnchor) {
+            // close modal animation may take a moment — delay navigation slightly
+            setTimeout(() => {
+                resolveAndNavigateDashboard(targetAnchor);
+            }, 250);
+        }
+    } catch (e) {
+        console.warn('Error navigating after saveEditBtn click', e);
+    }
 });
+
+// Wire delete modal actions
+const deleteModal = document.getElementById('delete-quiz-modal');
+if (deleteModal) {
+    const confirmDeleteBtn = document.getElementById('confirm-delete-btn');
+    const cancelDeleteBtn = document.getElementById('cancel-delete-btn');
+    const cancelDeleteAction = document.getElementById('cancel-delete-action');
+    const overlay = deleteModal.querySelector('.modal-overlay');
+
+    function closeDeleteModal() {
+        deleteModal.classList.remove('active');
+        document.body.style.overflow = '';
+        delete deleteModal.dataset.targetId;
+    }
+
+    if (overlay) overlay.addEventListener('click', closeDeleteModal);
+    if (cancelDeleteBtn) cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+    if (cancelDeleteAction) cancelDeleteAction.addEventListener('click', closeDeleteModal);
+
+    if (confirmDeleteBtn) {
+        confirmDeleteBtn.addEventListener('click', () => {
+            const targetId = deleteModal.dataset && deleteModal.dataset.targetId ? deleteModal.dataset.targetId : null;
+            closeDeleteModal();
+            if (targetId) performDelete(targetId);
+        });
+    }
+}
 
 // render initially
 document.addEventListener('DOMContentLoaded', () => {

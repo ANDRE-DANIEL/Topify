@@ -74,7 +74,11 @@
           await loginUser(u,p);
           msg.textContent = 'Signed in — redirecting...'; msg.className='success';
           // small delay for UX then redirect to dashboard in same folder
-          setTimeout(()=> window.location.href = 'dashboard.html', 600);
+          setTimeout(()=> {
+            const target = new URL('dashboard.html', window.location.href).href;
+            console.log('login: redirecting to', target);
+            window.location.href = target;
+          }, 600);
         }catch(err){
           msg.textContent = err.message || 'Login failed'; msg.className='error';
         }
@@ -82,7 +86,9 @@
 
       // If already logged in redirect straight away
       if(isAuthenticated()){
-        window.location.href = 'dashboard.html';
+        const target = new URL('dashboard.html', window.location.href).href;
+        console.log('login: already authenticated, redirecting to', target);
+        window.location.href = target;
       }
     })();
   </script>

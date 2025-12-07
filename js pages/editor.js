@@ -4,7 +4,7 @@
   const id = params.get('id');
   if (!id) {
     alert('No quiz id provided');
-    window.location.href = 'dashboard.html';
+    window.location.href = new URL('dashboard.html', window.location.href).href;
     return;
   }
 
@@ -13,7 +13,7 @@
   const quiz = quizzes[id];
   if (!quiz) {
     alert('Quiz not found');
-    window.location.href = 'dashboard.html';
+    window.location.href = new URL('dashboard.html', window.location.href).href;
     return;
   }
 
