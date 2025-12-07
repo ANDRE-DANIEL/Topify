@@ -165,6 +165,17 @@ let currentQuestionIndex = 0;
 let answers = {};
 let startTime = null;
 
+// Utility: Fisher-Yates shuffle
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        const tmp = array[i];
+        array[i] = array[j];
+        array[j] = tmp;
+    }
+    return array;
+}
+
 // Get quiz ID from URL
 function getQuizIdFromURL() {
     const params = new URLSearchParams(window.location.search);
@@ -174,7 +185,12 @@ function getQuizIdFromURL() {
 // Initialize quiz
 function initQuiz() {
     const quizId = getQuizIdFromURL();
-    currentQuiz = quizData[quizId];
+    const originalQuiz = quizData[quizId];
+    // create a shallow copy of the quiz and shuffle the questions
+    currentQuiz = {
+        ...originalQuiz,
+        questions: shuffleArray(originalQuiz.questions.slice())
+    };
     
     if (!currentQuiz) {
         window.location.href = '/';
