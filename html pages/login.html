@@ -26,8 +26,12 @@
 
     
   <style>
-    /* Center the auth card using existing theme */
-    .auth-wrapper{ display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem; background:var(--background); }
+    /* Center the auth card and use a background image with overlay for readability */
+    .auth-wrapper{
+      display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem;
+      background: linear-gradient(rgba(11,18,32,0.45), rgba(11,18,32,0.45)), url('../pics/bg.avif') center/cover no-repeat;
+      background-attachment: fixed;
+    }
     .auth-card{ width:420px; max-width:96%; }
     .auth-sub { color:var(--muted-foreground); margin-bottom:1rem }
     #login-msg{ margin-top:0.5rem }
