@@ -6,26 +6,6 @@
   <title>Topify — Register</title>
   <link rel="stylesheet" href="../css pages/styles.css">
   <link rel="icon" href="../pics/favicon.png" type="image/png">
-  <script>
-    // Apply saved theme immediately to avoid flash of wrong theme
-    (function(){
-      try{
-        const saved = localStorage.getItem('topify_theme') || 'light';
-        if(saved === 'dark') document.documentElement.classList.add('theme-dark');
-        else document.documentElement.classList.remove('theme-dark');
-      }catch(e){}
-    })();
-  </script>
-  <style>
-    .auth-wrapper{
-      display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem;
-      background: linear-gradient(rgba(11,18,32,0.45), rgba(11,18,32,0.45)), url('../pics/bg.avif') center/cover no-repeat;
-      background-attachment: fixed;
-    }
-    .auth-card{ width:420px; max-width:96%; }
-    .auth-sub { color:var(--muted-foreground); margin-bottom:1rem }
-    #reg-msg{ margin-top:0.5rem }
-  </style>
 
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
@@ -62,6 +42,27 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Apply saved theme immediately to avoid flash of wrong theme
+    (function(){
+      try{
+        const saved = localStorage.getItem('topify_theme') || 'light';
+        if(saved === 'dark') document.documentElement.classList.add('theme-dark');
+        else document.documentElement.classList.remove('theme-dark');
+      }catch(e){}
+    })();
+  </script>
+  <style>
+    .auth-wrapper{
+      display:flex; align-items:center; justify-content:center; min-height:100vh; padding:2rem;
+      background: linear-gradient(rgba(11,18,32,0.45), rgba(11,18,32,0.45)), url('../pics/bg.avif') center/cover no-repeat;
+      background-attachment: fixed;
+    }
+    .auth-card{ width:420px; max-width:96%; }
+    .auth-sub { color:var(--muted-foreground); margin-bottom:1rem }
+    #reg-msg{ margin-top:0.5rem }
+  </style>
 
   <script src="../js pages/auth.js"></script>
   <script>

@@ -6,17 +6,7 @@
   <title>Topify — Login</title>
   <link rel="stylesheet" href="../css pages/styles.css">
   <link rel="icon" href="../pics/favicon.png" type="image/png">
-  <script>
-    // Apply saved theme immediately to avoid flash of wrong theme
-    (function(){
-      try{
-        const saved = localStorage.getItem('topify_theme') || 'light';
-        if(saved === 'dark') document.documentElement.classList.add('theme-dark');
-        else document.documentElement.classList.remove('theme-dark');
-      }catch(e){}
-    })();
-  </script>
-
+  
   <script type="text/javascript">
     (function(c,l,a,r,i,t,y){
         c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -63,6 +53,17 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Apply saved theme immediately to avoid flash of wrong theme
+    (function(){
+      try{
+        const saved = localStorage.getItem('topify_theme') || 'light';
+        if(saved === 'dark') document.documentElement.classList.add('theme-dark');
+        else document.documentElement.classList.remove('theme-dark');
+      }catch(e){}
+    })();
+  </script>
 
   <script src="../js pages/auth.js"></script>
   <script>
